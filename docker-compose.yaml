@@ -8,9 +8,10 @@ services:
     volumes:
       - dev-db-data:/var/lib/postgresql/data
         # copy the sql script to create tables
-      - ./sql/populate_database.sql:/docker-entrypoint-initdb.d/create_tables.sql
-        # copy the sql script to fill tables
-      - ./sql/fill_tables.sql:/docker-entrypoint-initdb.d/fill_tables.sql
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./sql/regions.csv:/docker-entrypoint-initdb.d/regions.csv
+      - ./sql/prices.csv:/docker-entrypoint-initdb.d/prices.csv
+      - ./sql/ports.csv:/docker-entrypoint-initdb.d/ports.csv
     environment:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser

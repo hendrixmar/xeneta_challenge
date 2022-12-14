@@ -1,0 +1,144 @@
+code,name,parent_slug
+CNCWN	Chiwan	china_south_main
+IESNN	Shannon	north_europe_sub
+FRLVE	Le Verdon-sur-Mer	north_europe_sub
+NOOSL	Oslo	norway_south_east
+GBPME	Portsmouth	uk_sub
+NOSVG	Stavanger	norway_south_west
+FIHEL	Helsingfors (Helsinki)	finland_main
+NOMAY	Måløy	scandinavia
+FRLIO	Lyon	north_europe_sub
+SEHAD	Halmstad	kattegat
+GBTIL	Tilbury	uk_sub
+DKCPH	Copenhagen (København)	kattegat
+NOFRK	Fredrikstad	norway_south_east
+CNYAT	Yantai	china_east_main
+CNSNZ	Shenzhen	china_south_main
+NOSKE	Skien	scandinavia
+DEWVN	Wilhelmshaven	north_europe_sub
+NOKSU	Kristiansund	norway_north_west
+SEMMA	Malmö	kattegat
+FIRAA	Brahestad (Raahe)	baltic
+FRDKK	Dunkerque	north_europe_sub
+GBLON	London	uk_sub
+NOSVE	Svelgen	norway_north_west
+FRBAS	Bassens	north_europe_sub
+NLMOE	Moerdijk	north_europe_sub
+IEDUB	Dublin	north_europe_sub
+FRDPE	Dieppe	north_europe_sub
+FIKOK	Karleby (Kokkola)	baltic
+NLRTM	Rotterdam	north_europe_main
+GBLTP	London Thamesport	uk_sub
+BEZEE	Zeebrugge	north_europe_main
+FIOUL	Uleåborg (Oulu)	baltic
+NOFUS	Fusa	scandinavia
+FRNEG	Bougenais	north_europe_sub
+DEBRE	Bremen	north_europe_sub
+SENRK	Norrköping	stockholm_area
+RUKDT	Kronshtadt	baltic
+FRLRH	La Rochelle	north_europe_sub
+FIMTY	Mantyluoto	baltic
+NOIKR	Ikornnes	scandinavia
+DKFRC	Fredericia	kattegat
+NOHVI	Håvik	norway_south_west
+FRMTX	Montoir-de-Bretagne	north_europe_sub
+FIKTK	Kotka	finland_main
+EEMUG	Muuga	baltic
+PLSZZ	Szczecin	baltic
+NOUME	Straume Industriområde	norway_south_west
+CNSHK	Shekou	china_south_main
+GBTEE	Teesport	uk_sub
+FRBOD	Bordeaux	north_europe_sub
+FRLEH	Le Havre	north_europe_main
+HKHKG	Hong Kong	china_south_main
+SESOE	Södertälje	stockholm_area
+NOHAL	Halden	scandinavia
+ESGIJ	Gijón	north_europe_sub
+NOBVG	Berlevåg	scandinavia
+IEORK	Cork	north_europe_sub
+DEBRV	Bremerhaven	north_europe_main
+ESZAZ	Zaragoza	north_europe_sub
+SEWAL	Wallhamn	scandinavia
+CNNBO	Ningbo	china_east_main
+NOFRO	Florø	scandinavia
+CNDAL	Dalian	china_north_main
+GBMNC	Manchester	uk_sub
+PLGDY	Gdynia	poland_main
+CNSGH	Shanghai	china_east_main
+FITKU	Åbo (Turku)	baltic
+GBHUL	Hull	uk_sub
+ESVGO	Vigo	north_europe_sub
+SEHEL	Helsingborg	kattegat
+NOMOL	Molde	norway_north_west
+NOTON	Tønsberg	norway_south_east
+CNHDG	Huadu Pt	china_south_main
+BEANR	Antwerpen	north_europe_main
+FIRAU	Rauma (Raumo)	finland_main
+PLGDN	Gdansk	poland_main
+NODRM	Drammen	norway_south_east
+NOSAS	Sandnes	norway_south_west
+NOKRS	Kristiansand	norway_south_east
+NOSUN	Sunndalsøra	scandinavia
+GBBEL	Belfast	uk_sub
+DKAAR	Århus	kattegat
+FRURO	Rouen	north_europe_sub
+GBLGP	London Gateway Port	uk_sub
+SEAHU	Åhus	scandinavia
+NOBVK	Brevik	norway_south_east
+FRANT	Antibes	north_europe_sub
+RUARH	Arkhangelsk	russia_north_west
+NOTOS	Tromsø	scandinavia
+SEGOT	Gothenburg (Göteborg)	kattegat
+FIIMA	Imatra	baltic
+FIKEM	Kemi/Torneå (Kemi/Tornio)	baltic
+GBGRG	Grangemouth	uk_sub
+EETLL	Tallinn	baltic_main
+FIHMN	Fredrikshamn (Hamina)	baltic
+RULED	Saint Petersburg (ex Leningrad)	baltic
+GBLIV	Liverpool	uk_sub
+CNGGZ	Guangzhou	china_south_main
+NOTRD	Trondheim	norway_north_west
+FRIRK	Dunkirk	north_europe_sub
+FRNTE	Nantes	north_europe_sub
+CNQIN	Qingdao	china_east_main
+RULUG	Lugovoye	baltic
+GBBRS	Bristol	uk_sub
+GBGOO	Goole	uk_sub
+CNLYG	Lianyungang	china_east_main
+GBTHP	Thamesport	uk_sub
+NOHAU	Haugesund	norway_south_west
+LVRIX	Riga	baltic_main
+DKAAL	Aalborg	scandinavia
+GBFXT	Felixstowe	uk_main
+NOMSS	Moss	norway_south_east
+NLAMS	Amsterdam	north_europe_sub
+FOTHO	Thorshavn	scandinavia
+NOHYR	Høyanger	scandinavia
+NOTAE	Tananger	scandinavia
+CNTXG	Xingang (Tianjin New Pt)	china_north_main
+SEGVX	Gävle	stockholm_area
+GBSOU	Southampton	uk_main
+CNXAM	Xiamen	china_east_main
+RUULU	Ust'-Luga	baltic
+NOBGO	Bergen	norway_south_west
+ESMPG	Marin, Pontevedra	north_europe_sub
+DEHAM	Hamburg	north_europe_main
+SEOXE	Oxelösund	stockholm_area
+NOLAR	Larvik	norway_south_east
+CNYTN	Yantian	china_south_main
+ISREY	Reykjavík	scandinavia
+ESBIO	Bilbao	north_europe_sub
+ISGRT	Grundartangi	scandinavia
+NOGJM	Gjemnes	scandinavia
+FRBES	Brest	north_europe_sub
+NOORK	Orkanger	norway_north_west
+NOAES	Ålesund	norway_north_west
+SESTO	Stockholm	stockholm_area
+GBIMM	Immingham	uk_sub
+LTKLJ	Klaipeda	baltic_main
+RUKGD	Kaliningrad	baltic
+GBGRK	Greenock	uk_sub
+SEPIT	Piteå	scandinavia
+ESVIT	Vitoria-Gasteiz	north_europe_sub
+DKEBJ	Esbjerg	scandinavia
+GBSSH	South Shields	uk_sub

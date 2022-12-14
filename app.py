@@ -1,13 +1,12 @@
-from chalice import Chalice
-from typing import List
+from robyn import Robyn
 
-app = Chalice(app_name='xeneta_api')
+app = Robyn(__file__)
 
+@app.get("/")
+async def h(request): # request is an optional parameter
+    return "Hello, world!"
 
-@app.route('/')
-def index():
-    return {'hello': 'world'}
-
+app.start(port=8000, url="0.0.0.0") # url is optional, defaults to 127.0.0.1
 
 class Select:
 
