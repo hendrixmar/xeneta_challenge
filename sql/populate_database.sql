@@ -18,13 +18,31 @@ select p1.code, p1.name,regions.slug, regions.parent_slug
      inner join ports p1 on
         regions.slug = p1.parent_slug
 ;
+-- query for getting all the prices from destiny a to destiny b
 WITH RECURSIVE regions_contained_origin AS (
     select
         *
     from
         regions
     where
-        slug in ('china_south_main')
+        slug in ('china_main')
+    union all
+        select
+            regions.slug,
+            regions.name,
+            regions.parent_slug
+        from
+            regions
+        inner join regions_contained_origin on
+            regions_contained_origin.slug = regions.parent_slug
+),
+    regions_contained_destiny AS (
+    select
+        *
+    from
+        regions
+    where
+        slug in ('baltic')
     union
         select
             regions.slug,
@@ -40,15 +58,22 @@ select *
     inner join ports on
         ports.parent_slug = regions_contained_origin.slug
     inner join prices p1 on
-        ports.code = p1.orig_code;
+        ports.code = p1.orig_code
+        -- filter price by dates
+       and p1.day BETWEEN '2016-01-27' AND '2016-01-30'
+    inner join ports p2 on
+        p2.code = p1.dest_code
+    and p2.parent_slug in (select slug from regions_contained_destiny);
 
-WITH RECURSIVE regions_contained_origin AS (
+
+
+
+
+CREATE RECURSIVE VIEW regions_contained_origin AS (
     select
         *
     from
         regions
-    where
-        slug in ('china_south_main', 'baltic')
     union
         select
             regions.slug,
@@ -58,7 +83,7 @@ WITH RECURSIVE regions_contained_origin AS (
             regions
         inner join regions_contained_origin on
             regions_contained_origin.slug = regions.parent_slug
-)
+);
 select * from regions_contained_origin;
 
 select count(*) from prices where prices.orig_code in ('CNCWN','CNYAT','CNSNZ','CNSHK','HKHKG','CNNBO','CNDAL','CNSGH','CNHDG','CNGGZ','CNQIN','CNLYG','CNTXG','CNXAM' ,'CNYTN');
