@@ -150,23 +150,48 @@ lol = [{"code": "CNCWN", "name": "Chiwan", "parent_slug": "china_south_main"},
 choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
 
 
-def fuzzy_search_port(string_search: str) -> List:
+def fuzzy_search_port(string_search: str, list_of_ports: list[dict], number_of_best_candidates: int) -> list[list[tuple[str, int | float, str]]]:
     """
-        Find the port most by comparing code, name, parent slug using
-        fuzzy matching
+    Find the port that is most similar to the string_search by comparing code, name, parent slug using
+    fuzzy matching using the library rapidfuzz.
 
-    :return: Iter
+        Parameters:
+                    string_search (str): The word you want to match with the ports
+                    list_of_ports (list[dict]): A list of port ports represented as a dictionary
+                    number_of_best_candidates (int): Limit the number of results
+
+        Returns:
+                best_results (list[List[dict]]): The n number
+
     """
 
-    # The first argument of the sorted will do the fuzzy search for each of the dictionary
-    # of the list and it will return a list of tuples that are form by the following elements
-    # (value: Str, score: float, key)
-    # the value is the value of the key and the score
-    return sorted((process.extract(string_search, row, scorer=fuzz.WRatio) for row in lol),
-                  key=lambda list_of_tuples: max(element[1] for element in list_of_tuples))
+    # The fuzzy search is applied for each of the dictionary of the list, and it will return a list of
+    # tuple for each key word of the dictionary. The tuples have the following structure
+    # (value of the key, score from 0 to 100, key of the value)
+    # the similarity fuzzy search is done by each value of the dictionary
+    list_of_scores = (process.extract(string_search, row, scorer=fuzz.WRatio) for row in list_of_ports)
+
+    # Then it necessary to sort the value based on each of the value have the most score
+    # by taking the highest score of the list of tuples as the sort argument
+    sorted_scores = sorted(list_of_scores,
+                           key=lambda list_of_tuples: max(element[1] for element in list_of_tuples), reverse=True)
+
+    return sorted_scores[: number_of_best_candidates]
+
 
 with Session() as session:
-    query = text('select code, name, parent_slug from ports')
-    results = [dict(row) for row in session.execute(query).fetchall()]
+    #query = text('select code, name, parent_slug from ports')
+    query = text("select false where "
+                 "EXISTS (select code from ports where ports.code = 'DKAAL' or ports.)")
 
-print(fuzzy_search_port("Amsterdamse"))
+    query = text("select (select false from ports where ports.code = 'DKAAL'), "
+                 "(select true from ports where ports.name = 'DKAAxL'), "
+                 "(select true from ports where ports.parent_slug = 'DKxAAL');")
+    results = session.execute(query).fetchone()
+
+print(results, any(results))
+"""
+temp = fuzzy_search_port("Amsterdamse", results, 4)
+for element in temp:
+    print(element)
+"""
