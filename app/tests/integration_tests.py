@@ -5,9 +5,10 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_read_item():
-    response = client.get("/rates", headers={"X-Token": "coneofsilence"})
-    assert response.status_code == 200
+def test_date():
+    response = client.get("/rates",
+                          json={"id": "foobar", "title": "Foo Bar", "description": "The Foo Barters"})
+    assert response.status_code == 422
     assert response.json() is None
 
 

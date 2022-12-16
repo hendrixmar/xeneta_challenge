@@ -15,16 +15,19 @@ client = TestClient(app)
 
 def test_date_from_region_to_region():
     """
-        Compare results of rates from one region to another of the function get_rates
+    Compare results of rates from one region to another of the function get_rates
 
     """
 
-    function_result: List[Row] = get_rates(date(2016, 1, 27),
-                                           date(2016, 1, 30),
-                                           ('china_main', PortColumn.PARENT_SLUG),
-                                           ('baltic', PortColumn.PARENT_SLUG))
+    function_result: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("china_main", PortColumn.PARENT_SLUG),
+        ("baltic", PortColumn.PARENT_SLUG),
+    )
 
-    query = text(f"""
+    query = text(
+        f"""
                 WITH RECURSIVE regions_contained_origin AS (
                     select * from regions where slug in ('china_main')
                     union all
@@ -61,30 +64,36 @@ def test_date_from_region_to_region():
                         p2.parent_slug in (select slug from regions_contained_destiny)
                     group by day
                     order by day
-            """)
+            """
+    )
 
     with Session() as session:
         query_result = session.execute(query).fetchall()
 
-    assert len(function_result) == len(query_result), "The results have different lengths"
+    assert len(function_result) == len(
+        query_result
+    ), "The results have different lengths"
 
     for func_resu, query_resu in zip(function_result, query_result):
-        assert func_resu == query_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert (
+            func_resu == query_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_region_to_port_with_name():
     """
-            Compare results of rates from one region to a specific port by using the name of the port
+    Compare results of rates from one region to a specific port by using the name of the port
 
     """
-    function_result_by_name: List[Row] = get_rates(date(2016, 1, 27),
-                                                   date(2016, 1, 30),
-                                                   ('china_main', PortColumn.PARENT_SLUG),
-                                                   ('Tallinn', PortColumn.NAME))
+    function_result_by_name: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("china_main", PortColumn.PARENT_SLUG),
+        ("Tallinn", PortColumn.NAME),
+    )
 
-
-
-    query = text(f"""
+    query = text(
+        f"""
                          WITH RECURSIVE regions_contained_origin AS (
                         select * from regions where slug in ('china_main')
                         union all
@@ -111,7 +120,8 @@ def test_rates_from_region_to_port_with_name():
                             and p2.name = 'Tallinn' 
                         group by day
                         order by day
-                    """)
+                    """
+    )
 
     with Session() as session:
         query_result_by_name = session.execute(query).fetchall()
@@ -119,20 +129,25 @@ def test_rates_from_region_to_port_with_name():
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
-        assert query_resu == func_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert (
+            query_resu == func_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_region_to_port_with_code():
     """
-            Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to a specific port by using the code or name of the port
 
     """
-    function_result_by_code: List[Row] = get_rates(date(2016, 1, 27),
-                                                   date(2016, 1, 30),
-                                                   ('china_main', PortColumn.PARENT_SLUG),
-                                                   ('EETLL', PortColumn.CODE))
+    function_result_by_code: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("china_main", PortColumn.PARENT_SLUG),
+        ("EETLL", PortColumn.CODE),
+    )
 
-    query = text(f"""
+    query = text(
+        f"""
                      WITH RECURSIVE regions_contained_origin AS (
                     select * from regions where slug in ('china_main')
                     union all
@@ -159,9 +174,11 @@ def test_rates_from_region_to_port_with_code():
                         and p2.code = 'EETLL' 
                     group by day
                     order by day
-                """)
+                """
+    )
 
-    query_by_name = text(f"""
+    query_by_name = text(
+        f"""
                          WITH RECURSIVE regions_contained_origin AS (
                         select * from regions where slug in ('china_main')
                         union all
@@ -188,7 +205,8 @@ def test_rates_from_region_to_port_with_code():
                             and p2.name = 'Tallinn' 
                         group by day
                         order by day
-                    """)
+                    """
+    )
 
     with Session() as session:
         query_result_by_code = session.execute(query).fetchall()
@@ -196,21 +214,26 @@ def test_rates_from_region_to_port_with_code():
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
-        assert query_resu == func_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert (
+            query_resu == func_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_port_to_region_using_name():
     """
-            Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to a specific port by using the code or name of the port
 
     """
 
-    function_result_by_name: List[Row] = get_rates(date(2016, 1, 27),
-                                                   date(2016, 1, 30),
-                                                   ('Shanghai', PortColumn.NAME),
-                                                   ('finland_main', PortColumn.PARENT_SLUG))
+    function_result_by_name: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("Shanghai", PortColumn.NAME),
+        ("finland_main", PortColumn.PARENT_SLUG),
+    )
 
-    query = text(f"""
+    query = text(
+        f"""
                     WITH RECURSIVE regions_contained_destiny AS (
                         select * from regions where slug in ('finland_main')
                         union
@@ -236,29 +259,38 @@ def test_rates_from_port_to_region_using_name():
                         prt.parent_slug in (select slug from regions_contained_destiny)
                     group by day
                     order by day
-            """)
+            """
+    )
 
     with Session() as session:
         query_result_by_name = session.execute(query).fetchall()
 
     assert len(query_result_by_name) == len(function_result_by_name)
 
-    for query_resu, func_resu in zip(query_result_by_name, function_result_by_name,):
-        assert query_resu == func_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
+    for query_resu, func_resu in zip(
+        query_result_by_name,
+        function_result_by_name,
+    ):
+        assert (
+            query_resu == func_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_port_to_region_using_code():
     """
-            Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to a specific port by using the code or name of the port
 
     """
 
-    function_result_by_code: List[Row] = get_rates(date(2016, 1, 27),
-                                                   date(2016, 1, 30),
-                                                   ('CNSGH', PortColumn.CODE),
-                                                   ('finland_main', PortColumn.PARENT_SLUG))
+    function_result_by_code: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("CNSGH", PortColumn.CODE),
+        ("finland_main", PortColumn.PARENT_SLUG),
+    )
 
-    query = text(f"""
+    query = text(
+        f"""
                     WITH RECURSIVE regions_contained_destiny AS (
                         select * from regions where slug in ('finland_main')
                         union
@@ -284,7 +316,8 @@ def test_rates_from_port_to_region_using_code():
                         prt.parent_slug in (select slug from regions_contained_destiny)
                     group by day
                     order by day
-            """)
+            """
+    )
 
     with Session() as session:
         query_result_by_code = session.execute(query).fetchall()
@@ -292,21 +325,26 @@ def test_rates_from_port_to_region_using_code():
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
-        assert query_resu == func_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert (
+            query_resu == func_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_port_to_port_using_code():
     """
-            Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to a specific port by using the code or name of the port
 
     """
 
-    function_result_by_code: List[Row] = get_rates(date(2016, 1, 27),
-                                                   date(2016, 1, 30),
-                                                   ('CNSGH', PortColumn.CODE),
-                                                   ('RULUG', PortColumn.CODE))
+    function_result_by_code: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("CNSGH", PortColumn.CODE),
+        ("RULUG", PortColumn.CODE),
+    )
 
-    query = text(f"""
+    query = text(
+        f"""
                     select day, avg(price) from ports
                         inner join prices p on
                             ports.code = p.orig_code
@@ -320,7 +358,8 @@ def test_rates_from_port_to_port_using_code():
 
                     group by day
                     order by day
-            """)
+            """
+    )
 
     with Session() as session:
         query_result_by_code = session.execute(query).fetchall()
@@ -328,21 +367,26 @@ def test_rates_from_port_to_port_using_code():
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
-        assert query_resu == func_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert (
+            query_resu == func_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_port_to_port_using_name():
     """
-            Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to a specific port by using the code or name of the port
 
     """
 
-    function_result_by_name: List[Row] = get_rates(date(2016, 1, 27),
-                                                   date(2016, 1, 30),
-                                                   ('Shanghai', PortColumn.NAME),
-                                                   ('Lugovoye', PortColumn.NAME))
+    function_result_by_name: List[Row] = get_rates(
+        date(2016, 1, 27),
+        date(2016, 1, 30),
+        ("Shanghai", PortColumn.NAME),
+        ("Lugovoye", PortColumn.NAME),
+    )
 
-    query = text(f"""
+    query = text(
+        f"""
                     select day, avg(price) from ports
                         inner join prices p on
                             ports.code = p.orig_code
@@ -356,16 +400,15 @@ def test_rates_from_port_to_port_using_name():
                         
                     group by day
                     order by day
-            """)
+            """
+    )
 
     with Session() as session:
-        query_result_by_name= session.execute(query).fetchall()
+        query_result_by_name = session.execute(query).fetchall()
 
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
-        assert query_resu == func_resu, f"The result of the function ({func_resu}) not equal ({query_resu}) "
-
-
-
-
+        assert (
+            query_resu == func_resu
+        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
