@@ -2,6 +2,8 @@ from rapidfuzz import process, fuzz
 from fastapi import FastAPI
 from sqlalchemy import text
 from db.init_db import Session
+from routers.service import get_rates
+from tools.validation import PortColumn
 
 lol = [{"code": "CNCWN", "name": "Chiwan", "parent_slug": "china_south_main"},
        {"code": "IESNN", "name": "Shannon", "parent_slug": "north_europe_sub"},
@@ -150,7 +152,8 @@ lol = [{"code": "CNCWN", "name": "Chiwan", "parent_slug": "china_south_main"},
 choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
 
 
-def fuzzy_search_port(string_search: str, list_of_ports: list[dict], number_of_best_candidates: int) -> list[list[tuple[str, int | float, str]]]:
+def fuzzy_search_port(string_search: str, list_of_ports: list[dict], number_of_best_candidates: int) -> \
+        list[list[tuple[str, int | float, str]]]:
     """
     Find the port that is most similar to the string_search by comparing code, name, parent slug using
     fuzzy matching using the library rapidfuzz.
@@ -180,11 +183,11 @@ def fuzzy_search_port(string_search: str, list_of_ports: list[dict], number_of_b
 
 
 with Session() as session:
-    #query = text('select code, name, parent_slug from ports')
-    query = text("select false where "
+    # query = text('select code, name, parent_slug from ports')
+    query = text("select False where "
                  "EXISTS (select code from ports where ports.code = 'DKAAL' or ports.)")
 
-    query = text("select (select false from ports where ports.code = 'DKAAL'), "
+    query = text("select (select true from ports where ports.code = 'DKAAL'), "
                  "(select true from ports where ports.name = 'DKAAxL'), "
                  "(select true from ports where ports.parent_slug = 'DKxAAL');")
     results = session.execute(query).fetchone()
@@ -195,3 +198,31 @@ temp = fuzzy_search_port("Amsterdamse", results, 4)
 for element in temp:
     print(element)
 """
+
+temp = get_rates('2016-01-20', '2016-01-30', ('china_main', PortColumn(3)), ('baltic', PortColumn(3)))
+print(temp)
+
+temp = get_rates('2016-01-20', '2016-01-30', ('china_main', PortColumn.PARENT_SLUG), ('EETLL', PortColumn.CODE))
+for i in temp:
+    print(i)
+
+print("-----" * 10)
+temp = get_rates('2016-01-20', '2016-01-30', ('CNGGZ', PortColumn.CODE), ('Tallinn', PortColumn.NAME))
+
+print(hash(temp[0]))
+for i in temp:
+    print(i)
+
+print("-----" * 10)
+temp = get_rates('2016-01-20', '2016-01-30', ('CNGGZ', PortColumn.CODE), ('Tallinn', PortColumn.NAME))
+for i in temp:
+    print(i)
+
+print("-----" * 10)
+temp = get_rates('2016-01-20', '2016-01-30', ('CNGGZ', PortColumn.CODE), ('Tallinn', PortColumn.NAME))
+for i in temp:
+    print(i)
+
+from datetime import datetime
+
+print(fuzzy_search_port('Floro', lol, 5))

@@ -6,9 +6,9 @@ client = TestClient(app)
 
 
 def test_read_item():
-    response = client.get("/", headers={"X-Token": "coneofsilence"})
+    response = client.get("/rates", headers={"X-Token": "coneofsilence"})
     assert response.status_code == 200
-    assert response.json() == {}
+    assert response.json() is None
 
 
 def test_read_item_bad_token():

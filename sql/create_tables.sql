@@ -90,6 +90,12 @@ DELIMITER ','
 CSV HEADER
 NULL as 'NULL';
 
+---
+--- Name: prices idx_date; Type: INDEX; Schema: tasks; Owner: Hendrik
+---
+
+CREATE INDEX idx_date
+ON prices(day);
 
 
 --

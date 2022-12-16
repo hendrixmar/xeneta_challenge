@@ -1,9 +1,6 @@
 # xeneta_challenge
 
 
-# Merchandise Sales API
-
-
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 This API that can be use for building point of sale completely serverless it is build with
