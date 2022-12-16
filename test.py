@@ -2,7 +2,7 @@ from rapidfuzz import process, fuzz
 from fastapi import FastAPI
 from sqlalchemy import text
 from db.init_db import Session
-from routers.service import get_rates, fuzzy_search_port
+from routers.service import get_rates, fuzzy_search_port, formatter
 from tools.validation import PortColumn
 
 lol = [
@@ -165,9 +165,6 @@ lol = [
 
 choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
 
-
-
-
 with Session() as session:
     # query = text('select code, name, parent_slug from ports')
     query = text(
@@ -226,8 +223,10 @@ temp = get_rates(
     "2016-01-20", "2016-01-30", ("CNGGZ", PortColumn.CODE), ("Tallinn", PortColumn.NAME)
 )
 for i in temp:
-    print(i)
+    print({"day": str(i[0]),
+           "average_price": round(i[1], 2)})
 
+print(list(formatter(temp, lambda x: {"day": str(x[0]), "average_price": round(x[1], 2)})))
 from datetime import datetime
 
-
+lambda row: {key: value for value, _, key in row}
