@@ -31,7 +31,7 @@ docker compose up
 
 ## Quickstart
 
-
+docker exec -it
 
 First, you'll need to install the AWS CDK if you haven't already.
 The CDK requires Node.js and npm to run.

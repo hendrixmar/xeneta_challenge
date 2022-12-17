@@ -6,10 +6,9 @@ client = TestClient(app)
 
 
 def test_date():
-    response = client.get("/rates",
-                          json={"id": "foobar", "title": "Foo Bar", "description": "The Foo Barters"})
+    response = client.get("/rates")
     assert response.status_code == 422
-    assert response.json() is None
+    assert response.json() == {}
 
 
 def test_read_item_bad_token():
