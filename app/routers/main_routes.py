@@ -7,7 +7,7 @@ from sqlalchemy import text
 
 from app.db.init_db import Session
 from app.tools.validation import validate_destination, validate_origin
-from routers.service import fuzzy_search_port, formatter, get_rates
+from app.routers.service import fuzzy_search_port, formatter, get_rates
 
 router = APIRouter()
 
@@ -18,7 +18,8 @@ async def root(key_word: str, limit: Optional[int] = 5):
         query = text("select code, name, parent_slug from ports")
         ports_rows = session.execute(query).fetchall()
 
-    return formatter(fuzzy_search_port(key_word, ports_rows, limit), lambda row: {key: value for value, _, key in row})
+    return formatter(fuzzy_search_port(key_word, ports_rows, limit),
+                     lambda row: {key: value for value, _, key in row})
 
 
 @router.get("/rates")

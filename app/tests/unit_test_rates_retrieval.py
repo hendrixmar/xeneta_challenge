@@ -5,9 +5,9 @@ from sqlalchemy.engine.row import Row
 from fastapi.testclient import TestClient
 
 from app.main import app
-from db.init_db import Session
-from routers.service import get_rates
-from tools.validation import PortColumn
+from app.db.init_db import Session
+from app.routers.service import get_rates
+from app.tools.validation import PortColumn
 from datetime import date
 
 client = TestClient(app)

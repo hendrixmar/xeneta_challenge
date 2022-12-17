@@ -4,8 +4,8 @@ from pydantic.types import date
 from rapidfuzz import process, fuzz
 from sqlalchemy import text
 
-from db.init_db import Session
-from tools.validation import PortColumn
+from app.db.init_db import Session
+from app.tools.validation import PortColumn
 
 
 def fuzzy_search_port(
