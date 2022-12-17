@@ -1,19 +1,23 @@
-version: "3.9"
+version: "3.11"
 
-# chalice local --host=0.0.0.0 --port=8000
 services:
   web:
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s # default
+        max_attempts: 5
     build: .
-    command: bash -c 'uvicorn app.main:app --host 0.0.0.0'
+    command: uvicorn app.api.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
       - .:/app
     ports:
       - 8008:8000
     environment:
       - DB_USER=devuser
-      - DB_NAME=devuser
-      - DB_PASS=devdb
-      - DB_HOST=localhost
+      - DB_NAME=devdb
+      - DB_PASS=dimadom
+      - DB_HOST=172.24.0.2
       - DB_PORT=5432
     depends_on:
       - db
@@ -32,11 +36,13 @@ services:
       - POSTGRES_PASSWORD=dimadom
     ports:
       - "6543:5432"
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
       interval: 5s
       timeout: 5s
       retries: 5
+
 
 volumes:
   dev-db-data:
