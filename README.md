@@ -1,1 +1,0 @@
-# xeneta_challenge
