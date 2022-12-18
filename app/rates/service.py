@@ -114,7 +114,7 @@ def generate_rates_query(
             PortColumn.PARENT_SLUG,
     ):
         query = text(
-            """
+            f"""
             WITH RECURSIVE regions_contained_origin AS (
                 select * from regions where slug in ('{origin_value}')
                 union all
@@ -165,7 +165,7 @@ def generate_rates_query(
         )
 
         query = text(
-            """
+            f"""
                 WITH RECURSIVE regions_contained_origin AS (
                     select * from regions where slug in ('china_main')
                     union all
@@ -258,7 +258,7 @@ def get_rates(
         date_to: Optional[date] | None,
         origin: Tuple[str, PortColumn] | None,
         destination: Tuple[str, PortColumn] | None,
-        aggregate_functions: Optional[Tuple[AggregateFunctions]] | None = tuple(AggregateFunctions.AVG)
+        aggregate_functions: Optional[List[AggregateFunctions]] | None = [AggregateFunctions.AVG]
 ):
     query = generate_rates_query(
         origin, destination, (date_from, date_to), aggregate_functions

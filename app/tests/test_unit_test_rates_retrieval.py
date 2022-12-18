@@ -93,7 +93,7 @@ def test_rates_from_region_to_port_with_name():
 
     query = text(
         """
-                         WITH RECURSIVE regions_contained_origin AS (
+                WITH RECURSIVE regions_contained_origin AS (
                         select * from regions where slug in ('china_main')
                         union all
                             select

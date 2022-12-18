@@ -45,6 +45,12 @@ jobs:
       - name: Lint with flake8
         run: |
           flake8 app --count --ignore=E501 --show-source --statistics
+      - name: Ls
+        run: |
+          pwd
+      - name: pwd
+        run: |
+          ls
       - name: Run migrations
         run: psql -f sql/create_tables_github_actions.sql postgresql://devuser:postgres@localhost:5432/devdb
 
