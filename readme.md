@@ -36,7 +36,7 @@ if anything is working fine you should see a swagger UI in you browser when you 
 
 
 
-I structured this project using [fastapi best practices](https://github.com/zhanymkanov/fastapi-best-practices)  resource.
+I structured this project using resource [fastapi best practices](https://github.com/zhanymkanov/fastapi-best-practices).
 The projected as followed:
 ```
 ├── app
@@ -72,7 +72,7 @@ The projected as followed:
 ├── readme.md
 ├── requirements.txt
 └── sql
-    ├── create_tables.sql
+    ├── create_tables.sql # this is the sql file that create the tables and fill the database with the csv when you run the docker compose
     ├── fill_tables.sql
     ├── populate_database.sql
     ├── ports.csv

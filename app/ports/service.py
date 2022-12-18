@@ -2,7 +2,7 @@ from typing import List
 
 from sqlalchemy import text
 
-from database import Session
+from app.database import Session
 from app.rates.utils import PortColumn
 
 

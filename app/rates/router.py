@@ -5,7 +5,7 @@ from fastapi.params import Depends
 from pydantic.datetime_parse import date
 from sqlalchemy import text
 
-from database import Session
+from app.database import Session
 from app.rates.utils import validate_destination, validate_origin, AggregateFunctions
 from app.rates.service import fuzzy_search_port, formatter, get_rates
 

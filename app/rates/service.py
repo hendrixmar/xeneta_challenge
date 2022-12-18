@@ -4,7 +4,7 @@ from pydantic.types import date
 from rapidfuzz import process, fuzz
 from sqlalchemy import text
 
-from database import Session
+from app.database import Session
 from app.rates.utils import PortColumn, AggregateFunctions
 
 
