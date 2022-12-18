@@ -53,7 +53,7 @@ jobs:
           DB_PORT: 5432
           POSTGRES_DB: devdb
           POSTGRES_USER: devuser
-          POSTGRES_PASS: dimadom
+          POSTGRES_PASS: postgres
       - uses: everlytic/branch-merge@1.1.2
         with:
           github_token: ${{ github.token }}
