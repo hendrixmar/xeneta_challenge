@@ -45,6 +45,9 @@ jobs:
       - name: Lint with flake8
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Run migrations
+        run: psql -f sql/create_tables.sql postgresql://devuser:postgres@localhost:5432/devdb
+
       - name: Test with pytest
         run: |
           pytest
