@@ -27,13 +27,13 @@ def test_date_from_region_to_region():
     )
 
     query = text(
-        f"""
+        """
         WITH RECURSIVE regions_contained_origin AS (
             select * from regions where slug in ('china_main')
             union all
                 select
-                    regions.slug, 
-                    regions.name, 
+                    regions.slug,
+                    regions.name,
                     regions.parent_slug
                 from
                     regions
@@ -43,9 +43,9 @@ def test_date_from_region_to_region():
             regions_contained_destiny AS (
             select * from regions where slug in ('baltic')
             union all
-                select 
-                    regions.slug, 
-                    regions.name, 
+                select
+                    regions.slug,
+                    regions.name,
                     regions.parent_slug
                 from
                     regions
@@ -60,7 +60,7 @@ def test_date_from_region_to_region():
                 -- filter price by dates
                and p1.day BETWEEN '2016-01-27' and '2016-01-30'
             inner join ports p2 on
-                p2.code = p1.dest_code and 
+                p2.code = p1.dest_code and
                 p2.parent_slug in (select slug from regions_contained_destiny)
             group by day
             order by day
@@ -75,9 +75,8 @@ def test_date_from_region_to_region():
     ), "The results have different lengths"
 
     for func_resu, query_resu in zip(function_result, query_result):
-        assert (
-            func_resu == query_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert func_resu == query_resu, \
+            f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_region_to_port_with_name():
@@ -93,7 +92,7 @@ def test_rates_from_region_to_port_with_name():
     )
 
     query = text(
-        f"""
+        """
                          WITH RECURSIVE regions_contained_origin AS (
                         select * from regions where slug in ('china_main')
                         union all
@@ -116,8 +115,8 @@ def test_rates_from_region_to_port_with_name():
                            and p1.day BETWEEN '2016-01-27' and '2016-01-30'
                         inner join ports p2 on
                             p2.code = p1.dest_code
-                        -- filtering prices by code, name 
-                            and p2.name = 'Tallinn' 
+                        -- filtering prices by code, name
+                            and p2.name = 'Tallinn'
                         group by day
                         order by day
                     """
@@ -129,9 +128,8 @@ def test_rates_from_region_to_port_with_name():
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
-        assert (
-            query_resu == func_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert query_resu == func_resu, \
+            f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_region_to_port_with_code():
@@ -147,8 +145,8 @@ def test_rates_from_region_to_port_with_code():
     )
 
     query = text(
-        f"""
-                     WITH RECURSIVE regions_contained_origin AS (
+        """
+             WITH RECURSIVE regions_contained_origin AS (
                     select * from regions where slug in ('china_main')
                     union all
                         select
@@ -170,42 +168,11 @@ def test_rates_from_region_to_port_with_code():
                        and p1.day BETWEEN '2016-01-27' and '2016-01-30'
                     inner join ports p2 on
                         p2.code = p1.dest_code
-                    -- filtering prices by code, name 
-                        and p2.code = 'EETLL' 
+                    -- filtering prices by code, name
+                        and p2.code = 'EETLL'
                     group by day
                     order by day
                 """
-    )
-
-    query_by_name = text(
-        f"""
-                         WITH RECURSIVE regions_contained_origin AS (
-                        select * from regions where slug in ('china_main')
-                        union all
-                            select
-                                regions.slug,
-                                regions.name,
-                                regions.parent_slug
-                            from
-                                regions
-                            inner join regions_contained_origin on
-                                regions_contained_origin.slug = regions.parent_slug
-                    )
-                    select day, round(avg(price), 2) as average_price
-                             from regions_contained_origin
-                        inner join ports on
-                            ports.parent_slug = regions_contained_origin.slug
-                        inner join prices p1 on
-                            ports.code = p1.orig_code
-                            -- filter price by dates
-                           and p1.day BETWEEN '2016-01-27' and '2016-01-30'
-                        inner join ports p2 on
-                            p2.code = p1.dest_code
-                        -- filtering prices by code, name 
-                            and p2.name = 'Tallinn' 
-                        group by day
-                        order by day
-                    """
     )
 
     with Session() as session:
@@ -214,9 +181,8 @@ def test_rates_from_region_to_port_with_code():
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
-        assert (
-            query_resu == func_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert query_resu == func_resu, \
+            f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_port_to_region_using_name():
@@ -233,7 +199,7 @@ def test_rates_from_port_to_region_using_name():
     )
 
     query = text(
-        f"""
+        """
                     WITH RECURSIVE regions_contained_destiny AS (
                         select * from regions where slug in ('finland_main')
                         union
@@ -249,9 +215,8 @@ def test_rates_from_port_to_region_using_name():
                     select day, round(avg(price), 2) as average_price from ports
                         inner join prices p1 on
                             ports.code = p1.orig_code
-                        -- filtering origin of prices by code, name 
-                            and ports.name = 'Shanghai' 
-
+                        -- filtering origin of prices by code, name
+                            and ports.name = 'Shanghai'
                         -- Filtering by a date
                            and p1.day BETWEEN '2016-01-27' and '2016-01-30'
                         inner join ports prt on
@@ -268,12 +233,11 @@ def test_rates_from_port_to_region_using_name():
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(
-        query_result_by_name,
-        function_result_by_name,
+            query_result_by_name,
+            function_result_by_name,
     ):
-        assert (
-            query_resu == func_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert query_resu == func_resu, \
+            f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
 def test_rates_from_port_to_region_using_code():
@@ -290,32 +254,31 @@ def test_rates_from_port_to_region_using_code():
     )
 
     query = text(
-        f"""
-                    WITH RECURSIVE regions_contained_destiny AS (
-                        select * from regions where slug in ('finland_main')
-                        union
-                            select
-                                regions.slug,
-                                regions.name,
-                                regions.parent_slug
-                            from
-                                regions
-                            inner join regions_contained_destiny on
-                                regions_contained_destiny.slug = regions.parent_slug
-                    )
-                    select day, round(avg(price), 2) as average_price from ports
-                        inner join prices p1 on
-                            ports.code = p1.orig_code
-                        -- filtering origin of prices by code, name 
-                            and ports.code = 'CNSGH' 
-
-                        -- Filtering by a date
-                           and p1.day BETWEEN '2016-01-27' and '2016-01-30'
-                        inner join ports prt on
-                        prt.code = p1.dest_code and
-                        prt.parent_slug in (select slug from regions_contained_destiny)
-                    group by day
-                    order by day
+        """
+            WITH RECURSIVE regions_contained_destiny AS (
+                select * from regions where slug in ('finland_main')
+                union
+                    select
+                        regions.slug,
+                        regions.name,
+                        regions.parent_slug
+                    from
+                        regions
+                    inner join regions_contained_destiny on
+                        regions_contained_destiny.slug = regions.parent_slug
+            )
+            select day, round(avg(price), 2) as average_price from ports
+                inner join prices p1 on
+                    ports.code = p1.orig_code
+                -- filtering origin of prices by code, name
+                    and ports.code = 'CNSGH'
+                -- Filtering by a date
+                   and p1.day BETWEEN '2016-01-27' and '2016-01-30'
+                inner join ports prt on
+                prt.code = p1.dest_code and
+                prt.parent_slug in (select slug from regions_contained_destiny)
+            group by day
+            order by day
             """
     )
 
@@ -325,14 +288,15 @@ def test_rates_from_port_to_region_using_code():
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
-        assert (
-            query_resu == func_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert query_resu == func_resu, (
+            f"The result of the function ({func_resu})" f" not equal ({query_resu}) "
+        )
 
 
 def test_rates_from_port_to_port_using_code():
     """
-    Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to
+    a specific port by using the code or name of the port
 
     """
 
@@ -344,21 +308,20 @@ def test_rates_from_port_to_port_using_code():
     )
 
     query = text(
-        f"""
-                    select day, round(avg(price), 2) as average_price from ports
-                        inner join prices p on
-                            ports.code = p.orig_code
-                        -- by origin
-                        and ports.code = 'CNSGH'
-                        -- by date
-                       and p.day BETWEEN '2016-01-27' and '2016-01-30'
-                        inner join ports p2 on
-                            p2.code = p.dest_code
-                        and p2.code = 'RULUG'
-
-                    group by day
-                    order by day
-            """
+        """
+            select day, round(avg(price), 2) as average_price from ports
+                inner join prices p on
+                    ports.code = p.orig_code
+                -- by origin
+                and ports.code = 'CNSGH'
+                -- by date
+               and p.day BETWEEN '2016-01-27' and '2016-01-30'
+                inner join ports p2 on
+                    p2.code = p.dest_code
+                and p2.code = 'RULUG'
+            group by day
+            order by day
+        """
     )
 
     with Session() as session:
@@ -367,14 +330,15 @@ def test_rates_from_port_to_port_using_code():
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
-        assert (
-            query_resu == func_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert query_resu == func_resu, (
+            f"The result of the function ({func_resu}) " f"not equal ({query_resu})"
+        )
 
 
 def test_rates_from_port_to_port_using_name():
     """
-    Compare results of rates from one region to a specific port by using the code or name of the port
+    Compare results of rates from one region to a specific
+    port by using the code or name of the port
 
     """
 
@@ -386,21 +350,20 @@ def test_rates_from_port_to_port_using_name():
     )
 
     query = text(
-        f"""
-                    select day, round(avg(price), 2) from ports
-                        inner join prices p on
-                            ports.code = p.orig_code
-                        -- by origin
-                        and ports.name = 'Shanghai'
-                        -- by date
-                       and p.day BETWEEN '2016-01-27' and '2016-01-30'
-                        inner join ports p2 on
-                            p2.code = p.dest_code
-                        and p2.name = 'Lugovoye'
-                        
-                    group by day
-                    order by day
-            """
+        """
+            select day, round(avg(price), 2) from ports
+                inner join prices p on
+                    ports.code = p.orig_code
+                -- by origin
+                and ports.name = 'Shanghai'
+                -- by date
+               and p.day BETWEEN '2016-01-27' and '2016-01-30'
+                inner join ports p2 on
+                    p2.code = p.dest_code
+                and p2.name = 'Lugovoye'
+            group by day
+            order by day
+        """
     )
 
     with Session() as session:
@@ -409,6 +372,6 @@ def test_rates_from_port_to_port_using_name():
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
-        assert (
-            query_resu == func_resu
-        ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+        assert query_resu == func_resu, (
+            f"The result of the function ({func_resu}) " f"not equal ({query_resu}) "
+        )

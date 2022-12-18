@@ -19,7 +19,5 @@ class Settings:
     DB_PORT = os.environ.get("DB_PORT")
     DB_NAME = config.get("DB")
     DATABASE_URL = (
-        f"postgresql+psycopg2://"
-        f"{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        f"postgresql+psycopg2://" f"{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
-

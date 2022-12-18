@@ -128,13 +128,13 @@ def test_integration_date_from_region_to_region():
     )
     assert response.status_code == 200
     query = text(
-        f"""
+        """
                 WITH RECURSIVE regions_contained_origin AS (
                     select * from regions where slug in ('china_main')
                     union all
                         select
-                            regions.slug, 
-                            regions.name, 
+                            regions.slug,
+                            regions.name,
                             regions.parent_slug
                         from
                             regions
@@ -144,9 +144,9 @@ def test_integration_date_from_region_to_region():
                     regions_contained_destiny AS (
                     select * from regions where slug in ('baltic')
                     union all
-                        select 
-                            regions.slug, 
-                            regions.name, 
+                        select
+                            regions.slug,
+                            regions.name,
                             regions.parent_slug
                         from
                             regions
@@ -161,7 +161,7 @@ def test_integration_date_from_region_to_region():
                         -- filter price by dates
                        and p1.day BETWEEN '2016-01-27' and '2016-01-30'
                     inner join ports p2 on
-                        p2.code = p1.dest_code and 
+                        p2.code = p1.dest_code and
                         p2.parent_slug in (select slug from regions_contained_destiny)
                     group by day
                     order by day

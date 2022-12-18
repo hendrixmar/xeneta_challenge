@@ -9,7 +9,7 @@ from app.rates.utils import PortColumn, AggregateFunctions
 
 
 def fuzzy_search_port(
-    string_search: str, list_of_ports: list[dict], number_of_best_candidates: int
+        string_search: str, list_of_ports: list[dict], number_of_best_candidates: int
 ) -> list[dict]:
     """
     Find the port that is most similar to the string_search by comparing code, name, parent slug using
@@ -46,9 +46,9 @@ def fuzzy_search_port(
 
 
 def generate_date_filter(
-    column_parameter: str,
-    date_from: Optional[date] | None,
-    date_to: Optional[date] | None,
+        column_parameter: str,
+        date_from: Optional[date] | None,
+        date_to: Optional[date] | None,
 ) -> str:
     if date_from and date_to:
         return f"and {column_parameter} BETWEEN '{date_from}' AND '{date_to}'"
@@ -61,8 +61,8 @@ def generate_date_filter(
 
 
 def generate_aggregate_funct(
-    aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
-    column_name: str = "price",
+        aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
+        column_name: str = "price",
 ) -> str:
     result = []
     naming = {
@@ -97,10 +97,10 @@ def formatter(sequence: Iterable, element_modifier: Callable) -> Iterable:
 
 
 def generate_rates_query(
-    origin: Tuple[str, PortColumn] | None,
-    destination: Tuple[str, PortColumn] | None,
-    range_date: Tuple[date | None, date | None],
-    aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
+        origin: Tuple[str, PortColumn] | None,
+        destination: Tuple[str, PortColumn] | None,
+        range_date: Tuple[date | None, date | None],
+        aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
 ) -> str:
     origin_value, origin_column = origin
     destination_value, destination_column = destination
@@ -110,17 +110,17 @@ def generate_rates_query(
     filter_by_date = generate_date_filter("day", *range_date)
     # query for all prices rates from one region to another region
     if (origin_column, destination_column) == (
-        PortColumn.PARENT_SLUG,
-        PortColumn.PARENT_SLUG,
+            PortColumn.PARENT_SLUG,
+            PortColumn.PARENT_SLUG,
     ):
         query = text(
-            f"""
+            """
             WITH RECURSIVE regions_contained_origin AS (
                 select * from regions where slug in ('{origin_value}')
                 union all
                     select
-                        regions.slug, 
-                        regions.name, 
+                        regions.slug,
+                        regions.name,
                         regions.parent_slug
                     from
                         regions
@@ -130,9 +130,9 @@ def generate_rates_query(
                 regions_contained_destiny AS (
                 select * from regions where slug in ('{destination_value}')
                 union all
-                    select 
-                        regions.slug, 
-                        regions.name, 
+                    select
+                        regions.slug,
+                        regions.name,
                         regions.parent_slug
                     from
                         regions
@@ -147,7 +147,7 @@ def generate_rates_query(
                     -- filter price by dates
                    {filter_by_date}
                 inner join ports p2 on
-                    p2.code = p1.dest_code and 
+                    p2.code = p1.dest_code and
                     p2.parent_slug in (select slug from regions_contained_destiny)
                 group by day
                 order by day
@@ -155,9 +155,9 @@ def generate_rates_query(
         )
     # query for all prices rates from one region to specific port name or code
     elif origin_column == PortColumn.PARENT_SLUG and destination_column in (
-        PortColumn.CODE,
-        PortColumn.NAME,
-        PortColumn.NONE,
+            PortColumn.CODE,
+            PortColumn.NAME,
+            PortColumn.NONE,
     ):
 
         filter_by_destiny = generate_port_filter(
@@ -165,7 +165,7 @@ def generate_rates_query(
         )
 
         query = text(
-            f"""
+            """
                 WITH RECURSIVE regions_contained_origin AS (
                     select * from regions where slug in ('china_main')
                     union all
@@ -185,20 +185,18 @@ def generate_rates_query(
                     inner join prices p1 on
                         ports.code = p1.orig_code
                         -- filter price by dates
-                       {filter_by_date} 
+                       {filter_by_date}
                     inner join ports p2 on
                         p2.code = p1.dest_code
-                    -- filtering prices by code, name 
+                    -- filtering prices by code, name
                         {filter_by_destiny}
                     group by day
                     order by day
                 """
         )
     # query for all prices rates from a port name or code to a specific region
-    elif (
-        origin_column in (PortColumn.CODE, PortColumn.NAME, PortColumn.NONE)
-        and destination_column == PortColumn.PARENT_SLUG
-    ):
+    elif origin_column in (PortColumn.CODE, PortColumn.NAME, PortColumn.NONE) and \
+            destination_column == PortColumn.PARENT_SLUG:
 
         filter_by_origin = generate_port_filter(origin_column, "ports", origin_value)
         query = text(
@@ -218,11 +216,10 @@ def generate_rates_query(
                 select day, {agg_query_str} from ports
                     inner join prices p1 on
                         ports.code = p1.orig_code
-                    -- filtering origin of prices by code, name 
+                    -- filtering origin of prices by code, name
                         {filter_by_origin}
-                        
                     -- Filtering by a date
-                       {filter_by_date} 
+                       {filter_by_date}
                     inner join ports prt on
                     prt.code = p1.dest_code and
                     prt.parent_slug in (select slug from regions_contained_destiny)
@@ -248,7 +245,6 @@ def generate_rates_query(
                         inner join ports p2 on
                             p2.code = p.dest_code
                         {filter_by_destiny}
-                        
                     group by day
                     order by day
                 """
@@ -257,16 +253,12 @@ def generate_rates_query(
     return query
 
 
-from typing import Tuple
-
-
 def get_rates(
-    date_from: Optional[date] | None,
-    date_to: Optional[date] | None,
-    origin: Tuple[str, PortColumn] | None,
-    destination: Tuple[str, PortColumn] | None,
-    aggregate_functions: Optional[List[AggregateFunctions]]
-    | None = [AggregateFunctions.AVG],
+        date_from: Optional[date] | None,
+        date_to: Optional[date] | None,
+        origin: Tuple[str, PortColumn] | None,
+        destination: Tuple[str, PortColumn] | None,
+        aggregate_functions: Optional[Tuple[AggregateFunctions]] | None = tuple(AggregateFunctions.AVG)
 ):
     query = generate_rates_query(
         origin, destination, (date_from, date_to), aggregate_functions
