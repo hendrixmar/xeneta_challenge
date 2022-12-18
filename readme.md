@@ -91,11 +91,11 @@ The projected as followed:
 ```
 
 Each package has its own router, schemas, models, etc.
-router.py - is a core of each module with all the endpoints
-service.py - module specific business logic
-constants.py - module specific constants and error codes
-config.py - e.g. env vars
-utils.py - non-business logic functions, e.g. response normalization, data enrichment, etc.
+- router.py - is a core of each module with all the endpoints
+- service.py - module specific business logic
+- constants.py - module specific constants and error codes
+- config.py - e.g. env vars
+- utils.py - non-business logic functions, e.g. response normalization, data enrichment, etc.
 
 
 ## Test Coverage
