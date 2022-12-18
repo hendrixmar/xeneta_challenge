@@ -50,7 +50,7 @@ jobs:
           pwd
       - name: pwd
         run: |
-          ls
+          ls sql
       - name: Run migrations
         run: psql -f sql/create_tables_github_actions.sql postgresql://devuser:postgres@localhost:5432/devdb
 
