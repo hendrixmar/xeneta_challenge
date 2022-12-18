@@ -44,7 +44,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Lint with flake8
         run: |
-          flake8 . --count --ignore=E501 --show-source --statistics
+          flake8 app --count --ignore=E501 --show-source --statistics
       - name: Run migrations
         run: psql -f sql/create_tables_github_actions.sql postgresql://devuser:postgres@localhost:5432/devdb
 
