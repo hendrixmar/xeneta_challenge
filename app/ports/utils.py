@@ -3,7 +3,7 @@ from enum import Enum
 from fastapi import Query, HTTPException
 from sqlalchemy import text
 
-from app.db.init_db import Session
+from database import Session
 from app.tools.utils import sanitize_string
 
 

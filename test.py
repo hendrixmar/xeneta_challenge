@@ -1,8 +1,6 @@
-from rapidfuzz import process, fuzz
-from fastapi import FastAPI
 from sqlalchemy import text
-from db.init_db import Session
-from rates.service import get_rates, fuzzy_search_port, formatter
+from database import Session
+from rates.service import get_rates, fuzzy_search_port
 from app.rates.utils import PortColumn
 
 lol = [

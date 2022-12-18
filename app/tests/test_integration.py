@@ -1,15 +1,9 @@
-from datetime import date
-from typing import List
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import text
-from sqlalchemy.engine.row import Row
 
 from app.main import app
-from app.db.init_db import Session
-from app.rates.service import get_rates
-from app.rates.utils import PortColumn
+from database import Session
 
 client = TestClient(app)
 

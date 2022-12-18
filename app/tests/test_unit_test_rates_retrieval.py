@@ -5,7 +5,7 @@ from sqlalchemy.engine.row import Row
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.db.init_db import Session
+from database import Session
 from app.rates.service import get_rates
 from app.rates.utils import PortColumn
 from datetime import date

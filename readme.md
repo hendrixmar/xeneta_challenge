@@ -39,32 +39,64 @@ if anything is working fine you should see a swagger UI in you browser when you 
 I structured this project using [fastapi best practices](https://github.com/zhanymkanov/fastapi-best-practices)  resource.
 The projected as followed:
 ```
-app
-├── db
-│   ├── get_rate_region_to_region.sql
-│   ├── init_db.py
-│   └── __init__.py
-├── db.py
-├── __init__.py
-├── main.py
-├── ports
+├── app
+│   ├── config.py
+│   ├── database.py
+│   ├── db
+│   │   └── __init__.py
+│   ├── db.py
 │   ├── __init__.py
-│   ├── router.py
-│   └── service.py
-├── rates
-│   ├── __init__.py
-│   ├── router.py
-│   ├── service.py
-│   └── utils.py
-├── tests
-│   ├── __init__.py
-│   ├── test_integration.py
-│   └── test_unit_test_rates_retrieval.py
-└── tools
-    ├── __init__.py
-    ├── settings.py
-    └── utils.py
+│   ├── main.py
+│   ├── ports
+│   │   ├── __init__.py
+│   │   ├── router.py
+│   │   ├── service.py
+│   │   └── utils.py
+│   ├── rates
+│   │   ├── __init__.py
+│   │   ├── router.py
+│   │   ├── service.py
+│   │   └── utils.py
+│   ├── tests
+│   │   ├── __init__.py
+│   │   ├── test_integration.py
+│   │   └── test_unit_test_rates_retrieval.py
+│   └── tools
+│       ├── __init__.py
+│       └── utils.py
+├── docker-compose.yaml
+├── Dockerfile
+├── images
+│   ├── regions.svg
+│   └── swagger.png
+├── readme.md
+├── requirements.txt
+└── sql
+    ├── create_tables.sql
+    ├── fill_tables.sql
+    ├── populate_database.sql
+    ├── ports.csv
+    ├── ports.txt
+    ├── prices.csv
+    ├── prices.txt
+    ├── regions.csv
+    ├── regions.txt
+    └── text_to_csv.py
+
+9 directories, 34 files
+
+
+9 directories, 35 files
+
 ```
+
+Each package has its own router, schemas, models, etc.
+router.py - is a core of each module with all the endpoints
+service.py - module specific business logic
+constants.py - module specific constants and error codes
+config.py - e.g. env vars
+utils.py - non-business logic functions, e.g. response normalization, data enrichment, etc.
+
 
 ## Test Coverage
 
