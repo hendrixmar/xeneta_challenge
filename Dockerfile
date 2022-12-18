@@ -12,6 +12,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install dependencies
 COPY requirements.txt .
+COPY .env .
 RUN pip install -r requirements.txt
 
 # copy project

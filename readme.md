@@ -28,6 +28,36 @@ region=YOUR_REGION (such as us-west-2, us-west-1, etc)
 docker compose up
 
 ```
+## Project structure
+
+app
+├── db
+│   ├── get_rate_region_to_region.sql
+│   ├── init_db.py
+│   └── __init__.py
+├── db.py
+├── __init__.py
+├── main.py
+├── ports
+│   ├── __init__.py
+│   ├── router.py
+│   └── service.py
+├── rates
+│   ├── __init__.py
+│   ├── router.py
+│   ├── service.py
+│   └── utils.py
+├── tests
+│   ├── __init__.py
+│   ├── test_integration.py
+│   └── test_unit_test_rates_retrieval.py
+└── tools
+    ├── __init__.py
+    ├── settings.py
+    └── utils.py
+
+5 directories, 19 files
+
 
 ## Quickstart
 

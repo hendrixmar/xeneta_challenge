@@ -5,7 +5,7 @@ from rapidfuzz import process, fuzz
 from sqlalchemy import text
 
 from app.db.init_db import Session
-from app.tools.validation import PortColumn
+from app.rates.utils import PortColumn
 
 
 def fuzzy_search_port(
@@ -42,7 +42,6 @@ def fuzzy_search_port(
     )
 
     return sorted_scores[:number_of_best_candidates]
-
 
 
 def generate_date_filter(

@@ -13,14 +13,11 @@ services:
       - .:/app
     ports:
       - 8008:8000
-    environment:
-      - DB_USER=devuser
-      - DB_NAME=devdb
-      - DB_PASS=dimadom
-      - DB_HOST=172.24.0.2
-      - DB_PORT=5432
+    env_file:
+      - .env
     depends_on:
       - db
+
   db:
     image: postgres:13-alpine
     volumes:
@@ -30,10 +27,8 @@ services:
       - ./sql/regions.csv:/docker-entrypoint-initdb.d/regions.csv
       - ./sql/prices.csv:/docker-entrypoint-initdb.d/prices.csv
       - ./sql/ports.csv:/docker-entrypoint-initdb.d/ports.csv
-    environment:
-      - POSTGRES_DB=devdb
-      - POSTGRES_USER=devuser
-      - POSTGRES_PASSWORD=dimadom
+    env_file:
+      - .env
     ports:
       - "6543:5432"
     restart: always
@@ -42,7 +37,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
 
 volumes:
   dev-db-data:

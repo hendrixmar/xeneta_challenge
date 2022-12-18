@@ -6,13 +6,13 @@ from pydantic.datetime_parse import date
 from sqlalchemy import text
 
 from app.db.init_db import Session
-from app.tools.validation import validate_destination, validate_origin
-from app.routers.service import fuzzy_search_port, formatter, get_rates
+from app.rates.utils import validate_destination, validate_origin
+from app.rates.service import fuzzy_search_port, formatter, get_rates
 
 router = APIRouter()
 
 
-@router.get("/search")
+@router.get("/ports")
 async def root(key_word: str, limit: Optional[int] = 5):
     with Session() as session:
         query = text("select code, name, parent_slug from ports")

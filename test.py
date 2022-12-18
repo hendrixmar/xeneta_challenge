@@ -2,8 +2,8 @@ from rapidfuzz import process, fuzz
 from fastapi import FastAPI
 from sqlalchemy import text
 from db.init_db import Session
-from routers.service import get_rates, fuzzy_search_port, formatter
-from tools.validation import PortColumn
+from rates.service import get_rates, fuzzy_search_port, formatter
+from tools.utils import PortColumn
 
 lol = [
     {"code": "CNCWN", "name": "Chiwan", "parent_slug": "china_south_main"},

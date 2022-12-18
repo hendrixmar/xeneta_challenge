@@ -1,18 +1,22 @@
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Literal
 from rapidfuzz import process, fuzz
 from fastapi import FastAPI, Query, Body, Depends, HTTPException
 from sqlalchemy import text
-from datetime import date, time, timedelta
 from app.db.init_db import Session
 import uvicorn
 
-
-def sanitize_string(query_parameter: str) -> str:
-    return "".join(char for char in query_parameter if char.isalpha() or char in "_")
+from app.tools.utils import sanitize_string
 
 
-def check_location_existing(location: str) -> tuple[str]:
+class PortColumn(Enum):
+    CODE = 1
+    NAME = 2
+    PARENT_SLUG = 3
+    NONE = 4
+
+
+def check_location_existing(location: str) -> tuple[str, PortColumn]:
     """
 
     Parameters:
@@ -48,24 +52,17 @@ def check_location_existing(location: str) -> tuple[str]:
     return location, PortColumn(index)
 
 
-def validate_origin(origin: str = Query(default=None)):
+def validate_origin(origin: str = Query(default=None)) -> tuple[str, PortColumn]:
     if not origin:
-        return None
+        return '', PortColumn.NONE
 
     sanitized_string = sanitize_string(origin)
     return check_location_existing(sanitized_string)
 
 
-def validate_destination(destination: str = Query(default=None)):
+def validate_destination(destination: str = Query(default=None)) -> tuple[str, PortColumn]:
     if not destination:
-        return None
+        return '', PortColumn.NONE
 
     sanitized_string = sanitize_string(destination)
     return check_location_existing(sanitized_string)
-
-
-class PortColumn(Enum):
-    CODE = 1
-    NAME = 2
-    PARENT_SLUG = 3
-    NONE = 4
