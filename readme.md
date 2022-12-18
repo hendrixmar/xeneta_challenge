@@ -1,35 +1,44 @@
-# xeneta_challenge
+# Xeneta challenge
 
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-This API that can be use for building point of sale completely serverless it is build with
-the following cloud technologies
+Hi xeneta team. I present you my project I hope you like what I have done. The main tecnology used for the are the following
 
-- AWS
-- Lambda
-- API Gateway
-- RDS PostgreSQL
-- Secret manager
--
+- [PostgreSql]
+- [FastAPI]
+- [Docker Compose]
+- [SQLAlchemy]
+- [Pytest]
+- [coverage]
 
-## Credentials
-Before you can deploy an application, be sure you have credentials configured. If you have previously configured your machine to run boto3 (the AWS SDK for Python) or the AWS CLI then you can skip this section.
 
-If this is your first time configuring credentials for AWS you can follow these steps to quickly get started:
+## Setup
+To setup the whole project you have to execute the following command after cloning the respository:
+
 ```sh
-$ mkdir ~/.aws
-$ cat >> ~/.aws/config
-[default]
-aws_access_key_id=YOUR_ACCESS_KEY_HERE
-aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
-region=YOUR_REGION (such as us-west-2, us-west-1, etc)
-
-docker compose up
-
+$ docker compose up
 ```
+
+if anything is working fine you should see a swagger UI in you browser when you go to this [link](http://0.0.0.0:8000/docs)
+
+![alt text](images/swagger.png)
+## Features
+
+- You can retrieve rates by using code, name, region
+- Added more aggregate function like SUM, COUNT, MIN, MAX, and STD
+- A port searcher using fuzzy matching (in case you forgot the exact name of the port you want to analyze)
+- A little script for converting txt file to a csv file to fill the database
+
+
+
 ## Project structure
 
+
+
+I structured this project using [fastapi best practices](https://github.com/zhanymkanov/fastapi-best-practices)  resource.
+The projected as followed:
+```
 app
 ├── db
 │   ├── get_rate_region_to_region.sql
@@ -55,60 +64,36 @@ app
     ├── __init__.py
     ├── settings.py
     └── utils.py
-
-5 directories, 19 files
-
-
-
-## Quickstart
-
-docker exec -it
-
-First, you'll need to install the AWS CDK if you haven't already.
-The CDK requires Node.js and npm to run.
-
-```sh
-$ npm install -g aws-cdk
 ```
 
-Next you'll need to install the requirements for the project.
+## Test Coverage
 
+I created several unit test and integrations test and got the following test coverage results
 ```
-$ pip install -r requirements.txt
-```
-
-There's also separate requirements files in the `infrastructure`
-and `backend` directories if you'd prefer to have separate virtual
-environments for your CDK and Chalice app.
-
-
-To deploy the application, `cd` to the `infrastructure` directory.
-If this is you're first time using the CDK you'll need to bootstrap
-your environment.
-
-```
-$ cdk bootstrap
-```
-
-Then you can deploy your infrastructure using the CDK.
-
-```
-$ cdk deploy
-```
-
-Now `cd` into the `backend` folder and then you can deploy your application using Chalice.
-
-```
-$ chalice deploy --stage prod
+Name                                          Stmts   Miss  Cover   Missing
+---------------------------------------------------------------------------
+app/__init__.py                                   0      0   100%
+app/config.py                                    11      0   100%
+app/db/__init__.py                                0      0   100%
+app/db/init_db.py                                 5      0   100%
+app/main.py                                       9      1    89%   10
+app/ports/__init__.py                             0      0   100%
+app/ports/router.py                               9      1    89%   14
+app/ports/service.py                              9      4    56%   10-17
+app/ports/utils.py                               24      4    83%   56-60
+app/rates/__init__.py                             0      0   100%
+app/rates/router.py                              18      4    78%   17-21
+app/rates/service.py                             57     11    81%   32-45, 55-60, 79, 92, 96
+app/rates/utils.py                               21      0   100%
+app/tests/__init__.py                             0      0   100%
+app/tests/test_integration.py                    33      0   100%
+app/tests/test_unit_test_rates_retrieval.py      67      2    97%   370, 412
+app/tools/__init__.py                             0      0   100%
+app/tools/utils.py                                9      0   100%
+---------------------------------------------------------------------------
+TOTAL                                           272     27    90%
 ```
 
-## Features
-
-- Import a HTML file and watch it magically convert to Markdown
-- Drag and drop images (requires your Dropbox account be linked)
-- Import and save files from GitHub, Dropbox, Google Drive and One Drive
-- Drag and drop markdown and HTML files into Dillinger
-- Export documents as Markdown, HTML and PDF
 
 Markdown is a lightweight markup language based on the formatting conventions
 that people naturally use in email.
@@ -122,161 +107,15 @@ As [John Gruber] writes on the [Markdown site][df1]
 > looking like it's been marked up with tags
 > or formatting instructions.
 
-This text you see here is *actually- written in Markdown! To get a feel
-for Markdown's syntax, type some text into the left window and
-watch the results in the right.
 
-## Tech
-
-Dillinger uses a number of open source projects to work properly:
-
-- [AngularJS] - HTML enhanced for web apps!
-- [Ace Editor] - awesome web-based text editor
-- [markdown-it] - Markdown parser done right. Fast and easy to extend.
-- [Twitter Bootstrap] - great UI boilerplate for modern web apps
-- [node.js] - evented I/O for the backend
-- [Express] - fast node.js network app framework [@tjholowaychuk]
-- [Gulp] - the streaming build system
-- [Breakdance](https://breakdance.github.io/breakdance/) - HTML
-to Markdown converter
-- [jQuery] - duh
-
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
-
-## Installation
-
-Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
-
-Install the dependencies and devDependencies and start the server.
-
-```sh
-cd dillinger
-npm i
-node app
-```
-
-For production environments...
-
-```sh
-npm install --production
-NODE_ENV=production node app
-```
-
-## Plugins
-
-Dillinger is currently extended with the following plugins.
-Instructions on how to use them in your own application are linked below.
-
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
-
-## Development
-
-Want to contribute? Great!
-
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantaneously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
-
-```sh
-node app
-```
-
-Second Tab:
-
-```sh
-gulp watch
-```
-
-(optional) Third:
-
-```sh
-karma test
-```
-
-#### Building for source
-
-For production release:
-
-```sh
-gulp build --prod
-```
-
-Generating pre-built zip archives for distribution:
-
-```sh
-gulp build dist --prod
-```
-
-## Docker
-
-Dillinger is very easy to install and deploy in a Docker container.
-
-By default, the Docker will expose port 8080, so change this within the
-Dockerfile if necessary. When ready, simply use the Dockerfile to
-build the image.
-
-```sh
-cd dillinger
-docker build -t <youruser>/dillinger:${package.json.version} .
-```
-
-This will create the dillinger image and pull in the necessary dependencies.
-Be sure to swap out `${package.json.version}` with the actual
-version of Dillinger.
-
-Once done, run the Docker image and map the port to whatever you wish on
-your host. In this example, we simply map port 8000 of the host to
-port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
-
-```sh
-docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
-```
-
-> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
-
-Verify the deployment by navigating to your server address in
-your preferred browser.
-
-```sh
-127.0.0.1:8000
-```
-
-## License
-
-MIT
-
-**Free Software, Hell Yeah!**
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
+   [SQLAlchemy]: <https://github.com/sqlalchemy>
+   [coverage]: <https://coverage.readthedocs.io/en/6.5.0/>
+   [Docker Compose]: <https://docs.docker.com/compose/>
+   [FastAPI]: <https://fastapi.tiangolo.com/>
+   [Pytest]: <https://docs.pytest.org/en/7.2.x/>
+   [PostgreSql]: <https://www.postgresql.org/docs/>
 
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
+

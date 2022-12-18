@@ -30,9 +30,9 @@ async def root(key_word: str, limit: Optional[int] = 5):
 async def root(
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
-    aggregate_functions: Optional[List[AggregateFunctions]] | None = Query(default=[AggregateFunctions.AVG]),
+    aggregate_functions: Optional[List[AggregateFunctions]]
+    | None = Query(default=[AggregateFunctions.AVG]),
     origin: Optional[str] = Depends(validate_origin),
     destination: Optional[str] | None = Depends(validate_destination),
-
 ):
     return get_rates(date_from, date_to, origin, destination, aggregate_functions)

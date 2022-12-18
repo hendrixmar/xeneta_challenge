@@ -298,7 +298,7 @@ select day, avg(price) from ports
                     order by day;
 
 
-                  select day, AVG(price)  as average_price from ports
+                  select day, round(AVG(price),2)  as average_price from ports
                         inner join prices p on
                             ports.code = p.orig_code
                         -- by origin

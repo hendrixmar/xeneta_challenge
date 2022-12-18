@@ -9,7 +9,7 @@ from app.rates.utils import PortColumn, AggregateFunctions
 
 
 def fuzzy_search_port(
-        string_search: str, list_of_ports: list[dict], number_of_best_candidates: int
+    string_search: str, list_of_ports: list[dict], number_of_best_candidates: int
 ) -> list[dict]:
     """
     Find the port that is most similar to the string_search by comparing code, name, parent slug using
@@ -46,9 +46,9 @@ def fuzzy_search_port(
 
 
 def generate_date_filter(
-        column_parameter: str,
-        date_from: Optional[date] | None,
-        date_to: Optional[date] | None,
+    column_parameter: str,
+    date_from: Optional[date] | None,
+    date_to: Optional[date] | None,
 ) -> str:
     if date_from and date_to:
         return f"and {column_parameter} BETWEEN '{date_from}' AND '{date_to}'"
@@ -61,23 +61,24 @@ def generate_date_filter(
 
 
 def generate_aggregate_funct(
-        aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
-        column_name: str = 'price'
+    aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
+    column_name: str = "price",
 ) -> str:
     result = []
     naming = {
-        'AVG': f'AVG({column_name})  as average_{column_name}',
-        'SUM': f'SUM({column_name})  as total_{column_name}',
-        'MAX': f'MAX({column_name})  as largest_{column_name}',
-        'MIN': f'MIN({column_name})  as lowest_{column_name}',
-        'COUNT': f'COUNT({column_name})  as number_of_{column_name}',
+        "AVG": f"ROUND(AVG({column_name}),2)  as average_{column_name}",
+        "SUM": f"SUM({column_name})  as total_{column_name}",
+        "MAX": f"MAX({column_name})  as largest_{column_name}",
+        "MIN": f"MIN({column_name})  as lowest_{column_name}",
+        "COUNT": f"COUNT({column_name})  as number_of_{column_name}",
+        "STD": f"ROUND(STDDEV({column_name}), 2)  as standard_deviation_{column_name}",
     }
     for agg_func in aggregate_functions:
 
         if agg_func == AggregateFunctions.COUNT:
-            result.append(f'{agg_func.value}(*)')
+            result.append(f"{agg_func.value}(*)")
         else:
-            result.append(f'{agg_func.value}({column_name})')
+            result.append(f"{agg_func.value}({column_name})")
 
     return ",".join(naming[agg_func.name] for agg_func in aggregate_functions)
 
@@ -96,21 +97,21 @@ def formatter(sequence: Iterable, element_modifier: Callable) -> Iterable:
 
 
 def generate_rates_query(
-        origin: Tuple[str, PortColumn] | None,
-        destination: Tuple[str, PortColumn] | None,
-        range_date: Tuple[date | None, date | None],
-        aggregate_functions: Optional[List[AggregateFunctions]] | None = None
+    origin: Tuple[str, PortColumn] | None,
+    destination: Tuple[str, PortColumn] | None,
+    range_date: Tuple[date | None, date | None],
+    aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
 ) -> str:
     origin_value, origin_column = origin
     destination_value, destination_column = destination
 
-    agg_query_str = generate_aggregate_funct(aggregate_functions, 'price')
+    agg_query_str = generate_aggregate_funct(aggregate_functions, "price")
 
     filter_by_date = generate_date_filter("day", *range_date)
     # query for all prices rates from one region to another region
     if (origin_column, destination_column) == (
-            PortColumn.PARENT_SLUG,
-            PortColumn.PARENT_SLUG,
+        PortColumn.PARENT_SLUG,
+        PortColumn.PARENT_SLUG,
     ):
         query = text(
             f"""
@@ -154,9 +155,9 @@ def generate_rates_query(
         )
     # query for all prices rates from one region to specific port name or code
     elif origin_column == PortColumn.PARENT_SLUG and destination_column in (
-            PortColumn.CODE,
-            PortColumn.NAME,
-            PortColumn.NONE,
+        PortColumn.CODE,
+        PortColumn.NAME,
+        PortColumn.NONE,
     ):
 
         filter_by_destiny = generate_port_filter(
@@ -195,8 +196,8 @@ def generate_rates_query(
         )
     # query for all prices rates from a port name or code to a specific region
     elif (
-            origin_column in (PortColumn.CODE, PortColumn.NAME, PortColumn.NONE)
-            and destination_column == PortColumn.PARENT_SLUG
+        origin_column in (PortColumn.CODE, PortColumn.NAME, PortColumn.NONE)
+        and destination_column == PortColumn.PARENT_SLUG
     ):
 
         filter_by_origin = generate_port_filter(origin_column, "ports", origin_value)
@@ -256,18 +257,20 @@ def generate_rates_query(
     return query
 
 
-
 from typing import Tuple
 
 
 def get_rates(
-        date_from: Optional[date] | None,
-        date_to: Optional[date] | None,
-        origin: Tuple[str, PortColumn] | None,
-        destination: Tuple[str, PortColumn] | None,
-        aggregate_functions: Optional[List[AggregateFunctions]] | None = [AggregateFunctions.AVG]
+    date_from: Optional[date] | None,
+    date_to: Optional[date] | None,
+    origin: Tuple[str, PortColumn] | None,
+    destination: Tuple[str, PortColumn] | None,
+    aggregate_functions: Optional[List[AggregateFunctions]]
+    | None = [AggregateFunctions.AVG],
 ):
-    query = generate_rates_query(origin, destination, (date_from, date_to), aggregate_functions)
+    query = generate_rates_query(
+        origin, destination, (date_from, date_to), aggregate_functions
+    )
     with Session() as session:
         results = session.execute(query).fetchall()
 

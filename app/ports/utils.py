@@ -1,11 +1,9 @@
 from enum import Enum
-from typing import Optional, Tuple, Literal
-from rapidfuzz import process, fuzz
-from fastapi import FastAPI, Query, Body, Depends, HTTPException
-from sqlalchemy import text
-from app.db.init_db import Session
-import uvicorn
 
+from fastapi import Query, HTTPException
+from sqlalchemy import text
+
+from app.db.init_db import Session
 from app.tools.utils import sanitize_string
 
 
@@ -52,7 +50,9 @@ def check_location_existing(location: str) -> tuple[str, PortColumn]:
     return string_formatter(location), PortColumn(index)
 
 
-def validate_identifier(identifier: str = Query(default=None)) -> tuple[str, PortColumn]:
+def validate_identifier(
+    identifier: str = Query(default=None),
+) -> tuple[str, PortColumn]:
     if not identifier:
         return "", PortColumn.NONE
 

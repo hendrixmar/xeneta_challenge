@@ -52,7 +52,7 @@ def test_date_from_region_to_region():
                         inner join regions_contained_destiny on
                             regions_contained_destiny.slug = regions.parent_slug
                 )
-                select day, avg(price) as average_price from regions_contained_origin
+                select day, round(avg(price), 2) as average_price from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
                     inner join prices p1 on
@@ -76,7 +76,7 @@ def test_date_from_region_to_region():
 
     for func_resu, query_resu in zip(function_result, query_result):
         assert (
-                func_resu == query_resu
+            func_resu == query_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -106,7 +106,7 @@ def test_rates_from_region_to_port_with_name():
                             inner join regions_contained_origin on
                                 regions_contained_origin.slug = regions.parent_slug
                     )
-                    select day, avg(price) as average_price
+                    select day, round(avg(price), 2) as average_price
                              from regions_contained_origin
                         inner join ports on
                             ports.parent_slug = regions_contained_origin.slug
@@ -130,7 +130,7 @@ def test_rates_from_region_to_port_with_name():
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
         assert (
-                query_resu == func_resu
+            query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -160,7 +160,7 @@ def test_rates_from_region_to_port_with_code():
                         inner join regions_contained_origin on
                             regions_contained_origin.slug = regions.parent_slug
                 )
-                select day, avg(price) as average_price
+                select day, round(avg(price), 2) as average_price
                          from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
@@ -191,7 +191,7 @@ def test_rates_from_region_to_port_with_code():
                             inner join regions_contained_origin on
                                 regions_contained_origin.slug = regions.parent_slug
                     )
-                    select day, avg(price) as average_price
+                    select day, round(avg(price), 2) as average_price
                              from regions_contained_origin
                         inner join ports on
                             ports.parent_slug = regions_contained_origin.slug
@@ -215,7 +215,7 @@ def test_rates_from_region_to_port_with_code():
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
         assert (
-                query_resu == func_resu
+            query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -246,7 +246,7 @@ def test_rates_from_port_to_region_using_name():
                             inner join regions_contained_destiny on
                                 regions_contained_destiny.slug = regions.parent_slug
                     )
-                    select day, avg(price) as average_price from ports
+                    select day, round(avg(price), 2) as average_price from ports
                         inner join prices p1 on
                             ports.code = p1.orig_code
                         -- filtering origin of prices by code, name 
@@ -268,11 +268,11 @@ def test_rates_from_port_to_region_using_name():
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(
-            query_result_by_name,
-            function_result_by_name,
+        query_result_by_name,
+        function_result_by_name,
     ):
         assert (
-                query_resu == func_resu
+            query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -303,7 +303,7 @@ def test_rates_from_port_to_region_using_code():
                             inner join regions_contained_destiny on
                                 regions_contained_destiny.slug = regions.parent_slug
                     )
-                    select day, avg(price) as average_price from ports
+                    select day, round(avg(price), 2) as average_price from ports
                         inner join prices p1 on
                             ports.code = p1.orig_code
                         -- filtering origin of prices by code, name 
@@ -326,7 +326,7 @@ def test_rates_from_port_to_region_using_code():
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
         assert (
-                query_resu == func_resu
+            query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -345,7 +345,7 @@ def test_rates_from_port_to_port_using_code():
 
     query = text(
         f"""
-                    select day, avg(price) as average_price from ports
+                    select day, round(avg(price), 2) as average_price from ports
                         inner join prices p on
                             ports.code = p.orig_code
                         -- by origin
@@ -368,7 +368,7 @@ def test_rates_from_port_to_port_using_code():
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
         assert (
-                query_resu == func_resu
+            query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -387,7 +387,7 @@ def test_rates_from_port_to_port_using_name():
 
     query = text(
         f"""
-                    select day, avg(price) from ports
+                    select day, round(avg(price), 2) from ports
                         inner join prices p on
                             ports.code = p.orig_code
                         -- by origin
@@ -410,5 +410,7 @@ def test_rates_from_port_to_port_using_name():
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
         assert (
-                query_resu == func_resu
+            query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
+
+
