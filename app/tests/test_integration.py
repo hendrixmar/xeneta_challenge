@@ -12,47 +12,47 @@ client = TestClient(app)
     "path,expected_status,expected_response",
     [
         (
-                "/rates?date_from=2016-30-1",
-                422,
-                {
-                    "detail": [
-                        {
-                            "loc": ["query", "date_from"],
-                            "msg": "invalid date format",
-                            "type": "value_error.date",
-                        }
-                    ]
-                },
+            "/rates?date_from=2016-30-1",
+            422,
+            {
+                "detail": [
+                    {
+                        "loc": ["query", "date_from"],
+                        "msg": "invalid date format",
+                        "type": "value_error.date",
+                    }
+                ]
+            },
         ),
         (
-                "/rates?date_to=2016-30-1",
-                422,
-                {
-                    "detail": [
-                        {
-                            "loc": ["query", "date_to"],
-                            "msg": "invalid date format",
-                            "type": "value_error.date",
-                        }
-                    ]
-                },
+            "/rates?date_to=2016-30-1",
+            422,
+            {
+                "detail": [
+                    {
+                        "loc": ["query", "date_to"],
+                        "msg": "invalid date format",
+                        "type": "value_error.date",
+                    }
+                ]
+            },
         ),
         (
-                "/rates?aggregate_functions=AVGG&aggregate_functions=MAX",
-                422,
-                {
-                    "detail": [
-                        {
-                            "ctx": {
-                                "enum_values": ["AVG", "SUM", "COUNT", "MAX", "MIN", "STD"]
-                            },
-                            "loc": ["query", "aggregate_functions", 0],
-                            "msg": "value is not a valid enumeration member; permitted: "
-                                   "'AVG', 'SUM', 'COUNT', 'MAX', 'MIN', 'STD'",
-                            "type": "type_error.enum",
-                        }
-                    ]
-                },
+            "/rates?aggregate_functions=AVGG&aggregate_functions=MAX",
+            422,
+            {
+                "detail": [
+                    {
+                        "ctx": {
+                            "enum_values": ["AVG", "SUM", "COUNT", "MAX", "MIN", "STD"]
+                        },
+                        "loc": ["query", "aggregate_functions", 0],
+                        "msg": "value is not a valid enumeration member; permitted: "
+                        "'AVG', 'SUM', 'COUNT', 'MAX', 'MIN', 'STD'",
+                        "type": "type_error.enum",
+                    }
+                ]
+            },
         ),
     ],
 )
@@ -80,34 +80,34 @@ def test_invalid_date():
     "path, expected_status, expected_response",
     [
         (
-                "/rates?destination=changai",
-                404,
-                {"detail": "The parameter changai isn't related with any port"},
+            "/rates?destination=changai",
+            404,
+            {"detail": "The parameter changai isn't related with any port"},
         ),
         (
-                "/rates?destination=CNSGHH",
-                404,
-                {"detail": "The parameter CNSGHH isn't related with any port"},
+            "/rates?destination=CNSGHH",
+            404,
+            {"detail": "The parameter CNSGHH isn't related with any port"},
         ),
         (
-                "/rates?destination=china_eas_main",
-                404,
-                {"detail": "The parameter china_eas_main isn't related with any port"},
+            "/rates?destination=china_eas_main",
+            404,
+            {"detail": "The parameter china_eas_main isn't related with any port"},
         ),
         (
-                "/rates?origin=changai",
-                404,
-                {"detail": "The parameter changai isn't related with any port"},
+            "/rates?origin=changai",
+            404,
+            {"detail": "The parameter changai isn't related with any port"},
         ),
         (
-                "/rates?origin=CNSGHH",
-                404,
-                {"detail": "The parameter CNSGHH isn't related with any port"},
+            "/rates?origin=CNSGHH",
+            404,
+            {"detail": "The parameter CNSGHH isn't related with any port"},
         ),
         (
-                "/rates?origin=china_eas_main",
-                404,
-                {"detail": "The parameter china_eas_main isn't related with any port"},
+            "/rates?origin=china_eas_main",
+            404,
+            {"detail": "The parameter china_eas_main isn't related with any port"},
         ),
     ],
 )
@@ -123,7 +123,9 @@ def test_integration_date_from_region_to_region():
 
     """
 
-    response = client.get('/rates?date_from=2016-1-27&date_to=2016-1-30&origin=china_main&destination=baltic')
+    response = client.get(
+        "/rates?date_from=2016-1-27&date_to=2016-1-30&origin=china_main&destination=baltic"
+    )
     assert response.status_code == 200
     query = text(
         f"""
@@ -170,8 +172,8 @@ def test_integration_date_from_region_to_region():
         query_result = [dict(row) for row in session.execute(query).fetchall()]
 
     for query_resu, resp_resu in zip(query_result, response.json()):
-        assert (
-                str(query_resu.get('day')) == str(resp_resu.get('day')) and
-                str(query_resu.get('average_price')) == str(resp_resu.get('average_price'))
+        assert str(query_resu.get("day")) == str(resp_resu.get("day")) and str(
+            query_resu.get("average_price")
+        ) == str(
+            resp_resu.get("average_price")
         ), f"The result of the function ({resp_resu}) not equal ({query_resu}) "
-
