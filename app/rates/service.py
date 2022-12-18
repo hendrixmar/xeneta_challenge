@@ -5,7 +5,7 @@ from rapidfuzz import process, fuzz
 from sqlalchemy import text
 
 from app.db.init_db import Session
-from app.rates.utils import PortColumn
+from app.rates.utils import PortColumn, AggregateFunctions
 
 
 def fuzzy_search_port(
@@ -30,7 +30,8 @@ def fuzzy_search_port(
     # (value of the key, score from 0 to 100, key of the value)
     # the similarity fuzzy search is done by each value of the dictionary
     list_of_scores = (
-        process.extract(string_search, dict(row), scorer=fuzz.WRatio) for row in list_of_ports
+        process.extract(string_search, dict(row), scorer=fuzz.WRatio)
+        for row in list_of_ports
     )
 
     # Then sort the tokens based on each of the value have the most score
@@ -59,6 +60,28 @@ def generate_date_filter(
     return ""
 
 
+def generate_aggregate_funct(
+        aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
+        column_name: str = 'price'
+) -> str:
+    result = []
+    naming = {
+        'AVG': f'AVG({column_name})  as average_{column_name}',
+        'SUM': f'SUM({column_name})  as total_{column_name}',
+        'MAX': f'MAX({column_name})  as largest_{column_name}',
+        'MIN': f'MIN({column_name})  as lowest_{column_name}',
+        'COUNT': f'COUNT({column_name})  as number_of_{column_name}',
+    }
+    for agg_func in aggregate_functions:
+
+        if agg_func == AggregateFunctions.COUNT:
+            result.append(f'{agg_func.value}(*)')
+        else:
+            result.append(f'{agg_func.value}({column_name})')
+
+    return ",".join(naming[agg_func.name] for agg_func in aggregate_functions)
+
+
 def generate_port_filter(column_type: PortColumn, column_name: str, value: str) -> str:
     if column_type == PortColumn.NAME:
         return f"and {column_name}.name = '{value}'"
@@ -76,9 +99,12 @@ def generate_rates_query(
         origin: Tuple[str, PortColumn] | None,
         destination: Tuple[str, PortColumn] | None,
         range_date: Tuple[date | None, date | None],
+        aggregate_functions: Optional[List[AggregateFunctions]] | None = None
 ) -> str:
     origin_value, origin_column = origin
     destination_value, destination_column = destination
+
+    agg_query_str = generate_aggregate_funct(aggregate_functions, 'price')
 
     filter_by_date = generate_date_filter("day", *range_date)
     # query for all prices rates from one region to another region
@@ -112,7 +138,7 @@ def generate_rates_query(
                     inner join regions_contained_destiny on
                         regions_contained_destiny.slug = regions.parent_slug
             )
-            select day, avg(price) from regions_contained_origin
+            select day, {agg_query_str} from regions_contained_origin
                 inner join ports on
                     ports.parent_slug = regions_contained_origin.slug
                 inner join prices p1 on
@@ -151,7 +177,7 @@ def generate_rates_query(
                         inner join regions_contained_origin on
                             regions_contained_origin.slug = regions.parent_slug
                 )
-                select day, avg(price)
+                select day, {agg_query_str}
                          from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
@@ -188,7 +214,7 @@ def generate_rates_query(
                         inner join regions_contained_destiny on
                             regions_contained_destiny.slug = regions.parent_slug
                 )
-                select day, avg(price) from ports
+                select day, {agg_query_str} from ports
                     inner join prices p1 on
                         ports.code = p1.orig_code
                     -- filtering origin of prices by code, name 
@@ -211,7 +237,7 @@ def generate_rates_query(
         )
         query = text(
             f"""
-                   select day, avg(price) from ports
+                   select day, {agg_query_str} from ports
                         inner join prices p on
                             ports.code = p.orig_code
                         -- by origin
@@ -230,6 +256,7 @@ def generate_rates_query(
     return query
 
 
+
 from typing import Tuple
 
 
@@ -238,9 +265,10 @@ def get_rates(
         date_to: Optional[date] | None,
         origin: Tuple[str, PortColumn] | None,
         destination: Tuple[str, PortColumn] | None,
+        aggregate_functions: Optional[List[AggregateFunctions]] | None = [AggregateFunctions.AVG]
 ):
-    query = generate_rates_query(origin, destination, (date_from, date_to))
+    query = generate_rates_query(origin, destination, (date_from, date_to), aggregate_functions)
     with Session() as session:
         results = session.execute(query).fetchall()
 
-    return results
+    return [dict(row) for row in results]

@@ -52,7 +52,7 @@ def test_date_from_region_to_region():
                         inner join regions_contained_destiny on
                             regions_contained_destiny.slug = regions.parent_slug
                 )
-                select day, avg(price) from regions_contained_origin
+                select day, avg(price) as average_price from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
                     inner join prices p1 on
@@ -68,7 +68,7 @@ def test_date_from_region_to_region():
     )
 
     with Session() as session:
-        query_result = session.execute(query).fetchall()
+        query_result = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(function_result) == len(
         query_result
@@ -76,7 +76,7 @@ def test_date_from_region_to_region():
 
     for func_resu, query_resu in zip(function_result, query_result):
         assert (
-            func_resu == query_resu
+                func_resu == query_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -106,7 +106,7 @@ def test_rates_from_region_to_port_with_name():
                             inner join regions_contained_origin on
                                 regions_contained_origin.slug = regions.parent_slug
                     )
-                    select day, avg(price)
+                    select day, avg(price) as average_price
                              from regions_contained_origin
                         inner join ports on
                             ports.parent_slug = regions_contained_origin.slug
@@ -124,13 +124,13 @@ def test_rates_from_region_to_port_with_name():
     )
 
     with Session() as session:
-        query_result_by_name = session.execute(query).fetchall()
+        query_result_by_name = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
         assert (
-            query_resu == func_resu
+                query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -160,7 +160,7 @@ def test_rates_from_region_to_port_with_code():
                         inner join regions_contained_origin on
                             regions_contained_origin.slug = regions.parent_slug
                 )
-                select day, avg(price)
+                select day, avg(price) as average_price
                          from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
@@ -191,7 +191,7 @@ def test_rates_from_region_to_port_with_code():
                             inner join regions_contained_origin on
                                 regions_contained_origin.slug = regions.parent_slug
                     )
-                    select day, avg(price)
+                    select day, avg(price) as average_price
                              from regions_contained_origin
                         inner join ports on
                             ports.parent_slug = regions_contained_origin.slug
@@ -209,13 +209,13 @@ def test_rates_from_region_to_port_with_code():
     )
 
     with Session() as session:
-        query_result_by_code = session.execute(query).fetchall()
+        query_result_by_code = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
         assert (
-            query_resu == func_resu
+                query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -246,7 +246,7 @@ def test_rates_from_port_to_region_using_name():
                             inner join regions_contained_destiny on
                                 regions_contained_destiny.slug = regions.parent_slug
                     )
-                    select day, avg(price) from ports
+                    select day, avg(price) as average_price from ports
                         inner join prices p1 on
                             ports.code = p1.orig_code
                         -- filtering origin of prices by code, name 
@@ -263,16 +263,16 @@ def test_rates_from_port_to_region_using_name():
     )
 
     with Session() as session:
-        query_result_by_name = session.execute(query).fetchall()
+        query_result_by_name = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(
-        query_result_by_name,
-        function_result_by_name,
+            query_result_by_name,
+            function_result_by_name,
     ):
         assert (
-            query_resu == func_resu
+                query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -303,7 +303,7 @@ def test_rates_from_port_to_region_using_code():
                             inner join regions_contained_destiny on
                                 regions_contained_destiny.slug = regions.parent_slug
                     )
-                    select day, avg(price) from ports
+                    select day, avg(price) as average_price from ports
                         inner join prices p1 on
                             ports.code = p1.orig_code
                         -- filtering origin of prices by code, name 
@@ -320,13 +320,13 @@ def test_rates_from_port_to_region_using_code():
     )
 
     with Session() as session:
-        query_result_by_code = session.execute(query).fetchall()
+        query_result_by_code = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
         assert (
-            query_resu == func_resu
+                query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -345,7 +345,7 @@ def test_rates_from_port_to_port_using_code():
 
     query = text(
         f"""
-                    select day, avg(price) from ports
+                    select day, avg(price) as average_price from ports
                         inner join prices p on
                             ports.code = p.orig_code
                         -- by origin
@@ -362,13 +362,13 @@ def test_rates_from_port_to_port_using_code():
     )
 
     with Session() as session:
-        query_result_by_code = session.execute(query).fetchall()
+        query_result_by_code = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(query_result_by_code) == len(function_result_by_code)
 
     for query_resu, func_resu in zip(query_result_by_code, function_result_by_code):
         assert (
-            query_resu == func_resu
+                query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "
 
 
@@ -404,11 +404,11 @@ def test_rates_from_port_to_port_using_name():
     )
 
     with Session() as session:
-        query_result_by_name = session.execute(query).fetchall()
+        query_result_by_name = [dict(row) for row in session.execute(query).fetchall()]
 
     assert len(query_result_by_name) == len(function_result_by_name)
 
     for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
         assert (
-            query_resu == func_resu
+                query_resu == func_resu
         ), f"The result of the function ({func_resu}) not equal ({query_resu}) "

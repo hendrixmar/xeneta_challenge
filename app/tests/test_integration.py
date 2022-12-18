@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -6,9 +7,33 @@ client = TestClient(app)
 
 
 def test_date():
-    response = client.get("/rates")
+    response = client.get("/rates", params={
+        "date_from": '2016-01-1'
+    })
+    assert response.status_code == 200
+
+
+def test_invalid_date():
+    response = client.get("/rates", params={
+        "date_from": '2016-30-1'
+    })
     assert response.status_code == 422
-    assert response.json() == {}
+    assert response.json() == {
+        'detail': [{'loc': ['query', 'date_from'], 'msg': 'invalid date format', 'type': 'value_error.date'}]}
+
+
+@pytest.mark.parametrize(
+    "path,expected_status,expected_response",
+    [
+        ("/rates?destination=changai", 404, {'detail': "The parameter changai isn't related with any port"}),
+
+    ],
+)
+def test_rates_retrieval(path, expected_status, expected_response):
+    response = client.get(path)
+    assert response.status_code == expected_status
+    assert response.json() == expected_response
+    print(response.json())
 
 
 def test_read_item_bad_token():

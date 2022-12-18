@@ -283,4 +283,51 @@ SELECT code, name, parent_slug
           levenshtein('amsterDam', code) <= 1;
 
 
+select day, avg(price) from ports
+                        inner join prices p on
+                            ports.code = p.orig_code
+                        -- by origin
+
+                        -- by date
+                        and day BETWEEN '2016-01-01' AND '2016-11-10'
+                        inner join ports p2 on
+                            p2.code = p.dest_code
+
+
+                    group by day
+                    order by day;
+
+
+                  select day, AVG(price)  as average_price from ports
+                        inner join prices p on
+                            ports.code = p.orig_code
+                        -- by origin
+
+                        -- by date
+                        and '2016-01-01' <= day
+                        inner join ports p2 on
+                            p2.code = p.dest_code
+
+
+                    group by day
+                    order by day;
+
+
+
+
+select day, avg(price) from ports
+    inner join prices p on
+        ports.code = p.orig_code
+    -- by origin
+
+    -- by date
+    and day BETWEEN '2016-01-01' AND '2016-01-10'
+    inner join ports p2 on
+        p2.code = p.dest_code
+
+
+group by day
+order by day;
+
+
 select (select true from ports where ports.code = 'DKAAL'), (select true from ports where ports.code = 'DKAAxL'), (select true from ports where ports.code = 'DKxAAL');

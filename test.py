@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from db.init_db import Session
 from rates.service import get_rates, fuzzy_search_port, formatter
-from tools.utils import PortColumn
+from app.rates.utils import PortColumn
 
 lol = [
     {"code": "CNCWN", "name": "Chiwan", "parent_slug": "china_south_main"},
@@ -188,45 +188,17 @@ for element in temp:
 
 print(fuzzy_search_port("Floro", lol, 5))
 
-temp = get_rates(
-    None, None, ("", PortColumn(4)), ("", PortColumn(4))
-)
+temp = get_rates(None, None, ("", PortColumn.NONE), ("", PortColumn.NONE))
 print(temp)
+from datetime import date
+
 
 temp = get_rates(
-    "2016-01-20",
-    "2016-01-30",
-    ("china_main", PortColumn.PARENT_SLUG),
-    ("EETLL", PortColumn.CODE),
-)
+        date(2016, 1, 1),
+        date(2016, 1, 10),
+        ("", PortColumn.NONE),
+        ("", PortColumn.NONE),
+    )
+
 for i in temp:
     print(i)
-
-print("-----" * 10)
-temp = get_rates(
-    "2016-01-20", "2016-01-30", ("CNGGZ", PortColumn.CODE), ("Tallinn", PortColumn.NAME)
-)
-
-print(hash(temp[0]))
-for i in temp:
-    print(i)
-
-print("-----" * 10)
-temp = get_rates(
-    "2016-01-20", "2016-01-30", ("CNGGZ", PortColumn.CODE), ("Tallinn", PortColumn.NAME)
-)
-for i in temp:
-    print(i)
-
-print("-----" * 10)
-temp = get_rates(
-    "2016-01-20", "2016-01-30", ("CNGGZ", PortColumn.CODE), ("Tallinn", PortColumn.NAME)
-)
-for i in temp:
-    print({"day": str(i[0]),
-           "average_price": round(i[1], 2)})
-
-print(list(formatter(temp, lambda x: {"day": str(x[0]), "average_price": round(x[1], 2)})))
-from datetime import datetime
-
-lambda row: {key: value for value, _, key in row}

@@ -8,7 +8,8 @@ class Settings:
     # in case you want to switch to mysql you can use this format
     # MYSQL_DB, MYSQL_USER, MYSQL_PASS
     config = {
-        key.split("_").pop(): value for key, value in os.environ.items()
+        key.split("_").pop(): value
+        for key, value in os.environ.items()
         if any(key.endswith(ending) for ending in ["USER", "PASS", "DB"])
     }
 
@@ -17,7 +18,10 @@ class Settings:
     DB_HOST = os.environ.get("DB_HOST")
     DB_PORT = os.environ.get("DB_PORT")
     DB_NAME = config.get("DB")
-    DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    DATABASE_URL = (
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+
 
 # The first argument of the sorted will do the fuzzy search using process.extract for each of the dictionary
 # of the list, and it will return a list of tuples that are formed by the following elements
