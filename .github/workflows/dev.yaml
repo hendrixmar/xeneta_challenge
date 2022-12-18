@@ -51,9 +51,9 @@ jobs:
         env:
           DB_HOST: localhost
           DB_PORT: 5432
-          DB_NAME: devdb
-          DB_USER: devuser
-          DB_PASS: postgres
+          POSTGRES_DB: devdb
+          POSTGRES_USER: devuser
+          POSTGRES_PASS: dimadom
       - uses: everlytic/branch-merge@1.1.2
         with:
           github_token: ${{ github.token }}
