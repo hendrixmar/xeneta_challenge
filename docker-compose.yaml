@@ -22,10 +22,10 @@ services:
     volumes:
       - dev-db-data:/var/lib/postgresql/data
         # copy the sql script to create tables
-      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
-      - ./sql/regions.csv:/docker-entrypoint-initdb.d/regions.csv
-      - ./sql/prices.csv:/docker-entrypoint-initdb.d/prices.csv
-      - ./sql/ports.csv:/docker-entrypoint-initdb.d/ports.csv
+      - /home/runner/work/xeneta_challenge/xeneta_challenge/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - /home/runner/work/xeneta_challenge/xeneta_challenge/sql/regions.csv:/docker-entrypoint-initdb.d/regions.csv
+      - /home/runner/work/xeneta_challenge/xeneta_challenge/sql/prices.csv:/docker-entrypoint-initdb.d/prices.csv
+      - /home/runner/work/xeneta_challenge/xeneta_challenge/sql/ports.csv:/docker-entrypoint-initdb.d/ports.csv
     env_file:
       - .env
     ports:
