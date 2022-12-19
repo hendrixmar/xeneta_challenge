@@ -14,6 +14,13 @@ class PortColumn(Enum):
     NONE = 3
 
 
+def generate_port_filter(column_type: PortColumn, column_name: str, value: str) -> str:
+
+    if column_type == PortColumn.NONE:
+        return ''
+
+    return f"and {column_name}.{column_type.name} = '{value}'"
+
 def check_location_existing(location: str) -> tuple[str, PortColumn]:
     """
 

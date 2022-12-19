@@ -4,14 +4,10 @@ from rapidfuzz import process, fuzz
 from sqlalchemy import text
 
 from app.database import Session
-from app.rates.service import generate_port_filter
-from app.rates.utils import PortColumn
+from app.ports.utils import PortColumn, generate_port_filter
 
 
-def port_filter(port_value: str, port_column: PortColumn):
-    if port_column == PortColumn.NONE:
-        return ''
-    return f"where {port_column.name.name} = '{port_value}'"
+
 
 def get_ports(port_value: str, port_column: PortColumn) -> List[dict[str, str]]:
     temp_query = "select code, name, parent_slug from ports {filter}".format(

@@ -1,14 +1,11 @@
-from typing import Optional, Tuple, List, Iterable, Callable
+from typing import Optional, Tuple, List
 
 from pydantic.types import date
-from rapidfuzz import process, fuzz
 from sqlalchemy import text
 
 from app.database import Session
+from app.ports.utils import generate_port_filter
 from app.rates.utils import PortColumn, AggregateFunctions
-
-
-
 
 def generate_date_filter(
         column_parameter: str,
@@ -48,12 +45,7 @@ def generate_aggregate_funct(
     return ",".join(naming[agg_func.name] for agg_func in aggregate_functions)
 
 
-def generate_port_filter(column_type: PortColumn, column_name: str, value: str) -> str:
 
-    if column_type == PortColumn.NONE:
-        return ''
-
-    return f"and {column_name}.{column_type.name} = '{value}'"
 
 def generate_rates_query(
         origin: Tuple[str, PortColumn] | None,
