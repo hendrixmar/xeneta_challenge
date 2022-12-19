@@ -23,6 +23,8 @@ $ docker compose up
 if anything is working fine you should see a swagger UI in you browser when you go to this [link](http://0.0.0.0:8000/docs)
 
 ![alt text](images/swagger.png)
+
+
 ## Features
 
 - You can retrieve rates by using code, name, region
