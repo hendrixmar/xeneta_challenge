@@ -30,6 +30,12 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
+        volumes:
+          - dev-db-data:/var/lib/postgresql/data
+          - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+          - ./sql/regions.csv:/docker-entrypoint-initdb.d/regions.csv
+          - ./sql/prices.csv:/docker-entrypoint-initdb.d/prices.csv
+          - ./sql/ports.csv:/docker-entrypoint-initdb.d/ports.csv
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
