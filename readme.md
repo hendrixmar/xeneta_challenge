@@ -44,10 +44,8 @@ The projected as followed:
 ├── app
 │   ├── config.py
 │   ├── database.py
-│   ├── db
-│   │   └── __init__.py
-│   ├── db.py
 │   ├── __init__.py
+│   ├── database.py
 │   ├── main.py
 │   ├── ports
 │   │   ├── __init__.py
@@ -85,10 +83,7 @@ The projected as followed:
     ├── regions.txt
     └── text_to_csv.py
 
-9 directories, 34 files
-
-
-9 directories, 35 files
+7 directories, 34 files
 
 ```
 
