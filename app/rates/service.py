@@ -36,7 +36,7 @@ def generate_aggregate_funct(
         "STD": f"ROUND(STDDEV({column_name}), 2)  as standard_deviation_{column_name}",
     }
 
-    return ",".join(naming[agg_func.name] for agg_func in aggregate_functions)
+    return ",".join(naming.get(agg_func.name, '') for agg_func in aggregate_functions)
 
 
 

@@ -44,11 +44,11 @@ client = TestClient(app)
                 "detail": [
                     {
                         "ctx": {
-                            "enum_values": ["AVG", "SUM", "COUNT", "MAX", "MIN", "STD"]
+                            "enum_values": ["AVG", "SUM", "COUNT", "MAX", "MIN", "STD", "VARIANCE"]
                         },
                         "loc": ["query", "aggregate_functions", 0],
                         "msg": "value is not a valid enumeration member; permitted: "
-                        "'AVG', 'SUM', 'COUNT', 'MAX', 'MIN', 'STD'",
+                        "'AVG', 'SUM', 'COUNT', 'MAX', 'MIN', 'STD', 'VARIANCE'",
                         "type": "type_error.enum",
                     }
                 ]

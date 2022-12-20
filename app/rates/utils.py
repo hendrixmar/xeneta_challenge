@@ -13,6 +13,8 @@ class AggregateFunctions(Enum):
     MAX = "MAX"
     MIN = "MIN"
     STD = "STD"
+    VARIANCE = "VARIANCE"
+
 
 
 def validate_origin(origin: str = Query(default=None)) -> tuple[str, PortColumn]:

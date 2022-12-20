@@ -65,7 +65,7 @@ CREATE TABLE regions (
 --
 
 COPY ports(code, name, parent_slug)
-FROM '/home/runner/work/xeneta_challenge/xeneta_challenge/sql/ports.csv'
+FROM 'ports.csv'
 DELIMITER ','
 CSV HEADER
 NULL as 'NULL';
@@ -75,7 +75,7 @@ NULL as 'NULL';
 --
 
 COPY regions(slug, name, parent_slug)
-FROM '/home/runner/work/xeneta_challenge/xeneta_challenge/sql/regions.csv'
+FROM 'regions.csv'
 DELIMITER ','
 CSV HEADER
 NULL as 'NULL';
@@ -85,7 +85,7 @@ NULL as 'NULL';
 --
 
 COPY prices(orig_code, dest_code, day, price)
-FROM '/home/runner/work/xeneta_challenge/xeneta_challenge/sql/prices.csv'
+FROM 'prices.csv'
 DELIMITER ','
 CSV HEADER
 NULL as 'NULL';
