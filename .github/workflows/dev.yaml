@@ -10,59 +10,14 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11"]
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: devuser
-          POSTGRES_DB: devdb
 
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          cache: 'pip' # caching pip dependencies
+      - name: Checkout
+        uses: actions/checkout@v1
 
-      - name: Install dependencies
-        #if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Lint with flake8
-        run: |
-          flake8 app --count --ignore=E501 --show-source --statistics
-      - name: Ls
-        run: |
-          pwd
-      - name: pwd
-        run: |
-          ls sql
-      - name: Run migrations
-        run: psql -f sql/create_tables_github_actions.sql postgresql://devuser:postgres@localhost:5432/devdb
-
-      - name: Test with pytest
-        run: |
-          pytest
-        env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          POSTGRES_DB: devdb
-          POSTGRES_USER: devuser
-          POSTGRES_PASS: postgres
+      - name: Start containers
+        run: docker-compose -f "docker-compose.yml" up -d --build
+      - name:
       - uses: everlytic/branch-merge@1.1.2
         with:
           github_token: ${{ github.token }}

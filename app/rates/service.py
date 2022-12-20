@@ -26,7 +26,7 @@ def generate_aggregate_funct(
         aggregate_functions: Optional[List[AggregateFunctions]] | None = None,
         column_name: str = "price",
 ) -> str:
-    result = []
+
     naming = {
         "AVG": f"ROUND(AVG({column_name}),2)  as average_{column_name}",
         "SUM": f"SUM({column_name})  as total_{column_name}",
@@ -35,12 +35,6 @@ def generate_aggregate_funct(
         "COUNT": f"COUNT({column_name})  as number_of_{column_name}",
         "STD": f"ROUND(STDDEV({column_name}), 2)  as standard_deviation_{column_name}",
     }
-    for agg_func in aggregate_functions:
-
-        if agg_func == AggregateFunctions.COUNT:
-            result.append(f"{agg_func.value}(*)")
-        else:
-            result.append(f"{agg_func.value}({column_name})")
 
     return ",".join(naming[agg_func.name] for agg_func in aggregate_functions)
 
@@ -90,7 +84,13 @@ def generate_rates_query(
                     inner join regions_contained_destiny on
                         regions_contained_destiny.slug = regions.parent_slug
             )
-            select day, {agg_query_str} from regions_contained_origin
+            select day, 
+                CASE WHEN count(*) > 3 
+                THEN round(avg(price),2) 
+                    ELSE null
+                END  as average_price,  
+                {agg_query_str} 
+            from regions_contained_origin
                 inner join ports on
                     ports.parent_slug = regions_contained_origin.slug
                 inner join prices p1 on
@@ -129,7 +129,12 @@ def generate_rates_query(
                         inner join regions_contained_origin on
                             regions_contained_origin.slug = regions.parent_slug
                 )
-                select day, {agg_query_str}
+                select day,
+                    CASE WHEN count(*) > 3 
+                    THEN round(avg(price),2) 
+                        ELSE null
+                    END  as average_price, 
+                        {agg_query_str}
                          from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
@@ -164,7 +169,12 @@ def generate_rates_query(
                         inner join regions_contained_destiny on
                             regions_contained_destiny.slug = regions.parent_slug
                 )
-                select day, {agg_query_str} from ports
+                select day,
+                        CASE 
+                            WHEN count(*) > 3 THEN round(avg(price),2) 
+                            ELSE null
+                        END as average_price, 
+                    {agg_query_str} from ports
                     inner join prices p1 on
                         ports.code = p1.orig_code
                     -- filtering origin of prices by code, name
@@ -186,7 +196,11 @@ def generate_rates_query(
         )
         query = text(
             f"""
-                   select day, {agg_query_str} from ports
+                   select day, CASE WHEN count(*) > 3 
+                                THEN round(avg(price),2) 
+                                    ELSE null
+                                END as average_price, 
+                        {agg_query_str} from ports
                         inner join prices p on
                             ports.code = p.orig_code
                         -- by origin
