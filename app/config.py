@@ -10,11 +10,11 @@ class Settings:
     config = {
         key.split("_").pop(): value
         for key, value in os.environ.items()
-        if any(key.endswith(ending) for ending in ["USER", "PASS", "DB"])
+        if any(key.endswith(ending) for ending in ["USER", "PASSWORD", "DB"])
     }
 
     DB_USER = config.get("USER")
-    DB_PASS = config.get("PASS")
+    DB_PASS = config.get("PASSWORD")
     DB_HOST = os.environ.get("DB_HOST")
     DB_PORT = os.environ.get("DB_PORT")
     DB_NAME = config.get("DB")

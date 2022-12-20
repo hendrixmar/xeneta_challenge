@@ -153,7 +153,12 @@ def test_integration_date_from_region_to_region():
                         inner join regions_contained_destiny on
                             regions_contained_destiny.slug = regions.parent_slug
                 )
-                select day, round(avg(price),2) as average_price from regions_contained_origin
+                select day, 
+                    CASE WHEN count(*) > 3  
+                        THEN round(avg(price),2) 
+                        ELSE null
+                    END 
+                    as average_price from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
                     inner join prices p1 on

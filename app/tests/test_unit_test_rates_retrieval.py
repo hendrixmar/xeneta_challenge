@@ -52,7 +52,12 @@ def test_date_from_region_to_region():
                 inner join regions_contained_destiny on
                     regions_contained_destiny.slug = regions.parent_slug
         )
-        select day, round(avg(price), 2) as average_price from regions_contained_origin
+        select day, 
+            CASE WHEN count(*) > 3  
+                THEN round(avg(price), 2) 
+                ELSE null
+            END as average_price 
+        from regions_contained_origin
             inner join ports on
                 ports.parent_slug = regions_contained_origin.slug
             inner join prices p1 on
@@ -105,7 +110,11 @@ def test_rates_from_region_to_port_with_name():
                             inner join regions_contained_origin on
                                 regions_contained_origin.slug = regions.parent_slug
                     )
-                    select day, round(avg(price), 2) as average_price
+                    select day, 
+                        CASE WHEN count(*) > 3  
+                            THEN round(avg(price),2) 
+                            ELSE null
+                        END as average_price
                              from regions_contained_origin
                         inner join ports on
                             ports.parent_slug = regions_contained_origin.slug
@@ -158,7 +167,10 @@ def test_rates_from_region_to_port_with_code():
                         inner join regions_contained_origin on
                             regions_contained_origin.slug = regions.parent_slug
                 )
-                select day, round(avg(price), 2) as average_price
+                select day, CASE WHEN count(*) > 3  
+                        THEN round(avg(price),2) 
+                        ELSE null
+                    END as average_price
                          from regions_contained_origin
                     inner join ports on
                         ports.parent_slug = regions_contained_origin.slug
@@ -212,7 +224,11 @@ def test_rates_from_port_to_region_using_name():
                             inner join regions_contained_destiny on
                                 regions_contained_destiny.slug = regions.parent_slug
                     )
-                    select day, round(avg(price), 2) as average_price from ports
+                    select day, 
+                        CASE WHEN count(*) > 3 
+                            THEN round(avg(price),2) 
+                            ELSE null
+                        END as average_price from ports
                         inner join prices p1 on
                             ports.code = p1.orig_code
                         -- filtering origin of prices by code, name
@@ -267,7 +283,12 @@ def test_rates_from_port_to_region_using_code():
                     inner join regions_contained_destiny on
                         regions_contained_destiny.slug = regions.parent_slug
             )
-            select day, round(avg(price), 2) as average_price from ports
+            select day, 
+                    CASE WHEN count(*) > 3  
+                        THEN round(avg(price),2) 
+                        ELSE null
+                    END as average_price 
+                from ports
                 inner join prices p1 on
                     ports.code = p1.orig_code
                 -- filtering origin of prices by code, name
@@ -309,7 +330,11 @@ def test_rates_from_port_to_port_using_code():
 
     query = text(
         """
-            select day, round(avg(price), 2) as average_price from ports
+            select day, 
+                CASE WHEN count(*) > 3 
+                        THEN round(avg(price), 2) 
+                        ELSE null
+                END as average_price from ports
                 inner join prices p on
                     ports.code = p.orig_code
                 -- by origin
@@ -351,7 +376,11 @@ def test_rates_from_port_to_port_using_name():
 
     query = text(
         """
-            select day, round(avg(price), 2) from ports
+            select day, 
+                    CASE WHEN count(*) > 3 
+                        THEN round(avg(price),2) 
+                        ELSE null
+                    END as average_price from ports
                 inner join prices p on
                     ports.code = p.orig_code
                 -- by origin
@@ -375,3 +404,44 @@ def test_rates_from_port_to_port_using_name():
         assert query_resu == func_resu, (
             f"The result of the function ({func_resu}) " f"not equal ({query_resu}) "
         )
+
+def test_rates_with_less_than_3_prices():
+    """
+    Compare results of rates from one region to a specific
+    port by using the code or name of the port
+
+    """
+
+    function_result_by_name: List[Row] = get_rates(
+        None,
+        None,
+        ("", PortColumn.NONE),
+        ("", PortColumn.NONE),
+    )
+
+    query = text(
+        """
+            select day, 
+                    CASE WHEN count(*) > 3 
+                        THEN round(avg(price),2) 
+                        ELSE null
+                    END as average_price, count(*) as count from ports
+                inner join prices p on
+                    ports.code = p.orig_code
+                inner join ports p2 on
+                    p2.code = p.dest_code
+            group by day
+            order by day
+        """
+    )
+
+    with Session() as session:
+        query_result_by_name = [dict(row) for row in session.execute(query).fetchall()]
+
+    assert len(query_result_by_name) == len(function_result_by_name)
+
+    for query_resu, func_resu in zip(query_result_by_name, function_result_by_name):
+
+        if func_resu.get('average_price') is None:
+            assert query_resu.get('count') <= 3
+
